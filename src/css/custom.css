@@ -11,12 +11,24 @@
   --ifm-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
 }
 
-.markdown img[alt="wechat"] {
-  max-width: 240px;
-  border-radius: 8px;
-}
-
 .markdown table {
   display: table;
   width: 100%;
+}
+
+.contact-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.contact-images img {
+  width: 240px;
+  height: 240px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
 }

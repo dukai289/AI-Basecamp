@@ -4,7 +4,7 @@
 const config = {
   title: "AI-Basecamp",
   tagline: "AI knowledge base",
-  favicon: "img/logo.svg",
+  favicon: "img/logo.png",
 
   url: "https://example.com",
   baseUrl: "/",
@@ -48,7 +48,7 @@ const config = {
         title: "AI-Basecamp",
         logo: {
           alt: "AI-Basecamp Logo",
-          src: "img/logo.svg",
+          src: "img/logo.png",
         },
         items: [
           {
