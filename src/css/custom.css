@@ -1,0 +1,22 @@
+:root {
+  --ifm-color-primary: #00856f;
+  --ifm-color-primary-dark: #007864;
+  --ifm-color-primary-darker: #006f5d;
+  --ifm-color-primary-darkest: #005c4d;
+  --ifm-color-primary-light: #00937b;
+  --ifm-color-primary-lighter: #009c83;
+  --ifm-color-primary-lightest: #00ad91;
+  --ifm-code-font-size: 95%;
+  --ifm-heading-letter-spacing: 0;
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+.markdown img[alt="wechat"] {
+  max-width: 240px;
+  border-radius: 8px;
+}
+
+.markdown table {
+  display: table;
+  width: 100%;
+}

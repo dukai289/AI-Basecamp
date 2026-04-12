@@ -1,0 +1,8 @@
+{
+  "label": "测评",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Benchmark、自动化评测、人工评审和回归测试。"
+  }
+}

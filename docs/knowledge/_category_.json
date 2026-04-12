@@ -1,0 +1,8 @@
+{
+  "label": "知识体系",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "AI 基础知识、概念解释、论文笔记和体系化资料。"
+  }
+}

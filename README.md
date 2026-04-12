@@ -1,84 +1,53 @@
 # AI-Basecamp
 
-一个用于沉淀 AI 相关内容的个人知识库。
+`AI-Basecamp` 是一个基于 `Docusaurus` 的 AI 内容站点，分为 `AI 动态` 和 `AI 知识库` 两部分。
 
-这里不追求“什么都收藏”，而是把新闻、模型评测、基础知识、工具框架、教程、方法论和外部资源按主题整理，方便后续检索、复盘和复用。
+## 本地开发
 
----
+安装依赖：
 
-## 目录导航
+```bash
+npm install
+```
+
+启动本地站点（源码启动）：
+
+```bash
+npm.cmd run start -- --host 0.0.0.0 --port 3000 --no-open
+```
+
+构建与预览：
+
+```bash
+npm.cmd run build
+npm.cmd run serve
+```
+
+
+## 目录结构
 
 ```text
 AI-Basecamp/
-├── 01-news/                    # AI 行业动态、产品发布、重要论文和事件跟踪
-├── 02-model-reviews/           # 模型体验、能力评测、对比结论和使用建议
-├── 03-knowledge/               # AI 基础知识、概念解释、论文笔记和体系化资料
-├── 04-tools-and-frameworks/    # 工具、框架、平台和工程实践
-│   ├── Agent开发/
-│   ├── 微调/
-│   ├── 测评/
-│   └── 部署/
-├── 05-guides-and-tutorials/    # 实操教程、上手指南、配置流程和案例步骤
-├── 06-methods/                 # 方法论、工作流、Prompt 策略和最佳实践
-├── 07-resources/               # 资源清单、链接合集、课程、书籍和数据集
-└── assets/                     # 图片、附件、截图和其他静态资源
+├── docs/                    # AI 动态和 AI 知识库文档
+├── static/                  # Docusaurus 静态资源
+│   └── img/                 # 图片等
+├── src/css/custom.css       # 站点样式覆盖
+├── docusaurus.config.js     # Docusaurus 配置
+├── sidebars.js              # 侧边栏配置
+├── package.json             # 前端依赖和脚本
+└── README.md
 ```
----
-## 内容说明
 
-### `01-news`
+## 内容维护
 
-记录值得回看的 AI 动态，例如模型发布、产品更新、重要公司动作、政策变化、标志性论文或行业趋势。
+主要内容放在 `docs/` 下：
 
-### `02-model-reviews`
+- `docs/news/`：AI 动态
+- `docs/knowledge/`：知识体系
+- `docs/guides-and-tutorials/`：教程与指南
+- `docs/model-reviews/`：模型评测
+- `docs/tools-and-frameworks/`：工具与框架
+- `docs/methods/`：方法论
+- `docs/resources/`：资源
 
-用于整理模型评测和使用体验。包括：
-
-- 模型基本信息：名称、厂商、发布时间、上下文长度、输入输出模态等
-- 适用场景：写作、代码、检索、Agent、长文档、多模态等
-- 优点和短板：基于实际任务记录，不只抄官方介绍
-- 对比结论：和其他模型相比，什么时候值得用、什么时候不值得用
-
-### `03-knowledge`
-
-沉淀相对稳定的 AI 知识，例如 Transformer、RAG、Embedding、Fine-tuning、RLHF、评测体系、多模态、推理优化等。适合放体系化笔记、论文阅读笔记和概念卡片。
-
-### `04-tools-and-frameworks`
-
-记录工具链和工程实践，当前分为：
-
-- `Agent开发/`：Agent 框架、工具调用、记忆、规划、工作流编排等
-- `微调/`：SFT、LoRA、数据构造、训练配置、模型适配等
-- `测评/`：Benchmark、自动化评测、人工评审、回归测试等
-- `部署/`：推理服务、API 网关、模型压缩、监控、成本优化等
-
-### `05-guides-and-tutorials`
-
-可以复现的教程和操作手册。  
-每篇都包含环境、步骤、命令、预期结果和常见问题，方便以后直接照着做。
-
-### `06-methods`
-
-整理方法论和可复用工作流，例如 Prompt 设计、知识库构建流程、AI 辅助研发流程、研究资料阅读流程、自动化评测流程等。
-
-### `07-resources`
-
-外部资源，例如课程、书籍、论文集合、博客、GitHub 项目、数据集、榜单和工具站。  
-按主题分类，并注明为什么值得收藏。
-
-### `assets`
-
-保存 README、笔记或教程中引用的图片、截图、附件和其他静态资源。  
-建议用有意义的文件名，避免 `image1.png` 这类难以维护的命名。
-
----
-## 当前状态
-
-这个仓库处于持续建设中。后续可以逐步补充各目录下的 `README.md`，让每个板块都形成自己的索引页。
-
----
-## 交流
-
-欢迎加好友交流 AI 相关话题。
-
-<img src="assets/wechat.jpg" alt="wechat" width="480">
+新增文档时直接在对应目录下创建 Markdown 文件即可。

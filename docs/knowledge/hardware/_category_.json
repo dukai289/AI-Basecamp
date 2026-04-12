@@ -1,0 +1,8 @@
+{
+  "label": "硬件",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "GPU、显存、部署硬件和推理性能相关内容。"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "微调",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "SFT、LoRA、数据构造、训练配置和模型适配。"
+  }
+}

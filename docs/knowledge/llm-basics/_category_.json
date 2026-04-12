@@ -1,0 +1,8 @@
+{
+  "label": "LLM 基础",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "LLM 推理、评测、显存、性能和质量相关基础知识。"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "教程与指南",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "实操教程、上手指南、配置流程和案例步骤。"
+  }
+}
