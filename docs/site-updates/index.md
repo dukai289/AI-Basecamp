@@ -8,7 +8,7 @@ sidebar_position: 999
 这里记录 AI-Basecamp 的内容、结构和站点配置变更，方便读者快速了解最近发生了什么。
 ## 2026-04-14
 
-- 将 "动态" 改为 "Docusaurus.blog"。
+- 将 "资讯" 改为 "Docusaurus.blog"。
 - 通过 docusaurus-search-local 支持本地搜索功能。
 
 ## 2026-04-13
