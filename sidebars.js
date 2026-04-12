@@ -2,9 +2,6 @@
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  newsSidebar: [
-    "news/2026-04-13-ai-news",
-  ],
   knowledgeSidebar: [
     {
       type: "category",

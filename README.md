@@ -28,7 +28,8 @@ npm run serve
 
 ```text
 AI-Basecamp/
-├── docs/                    # 动态、资讯和知识库文档
+├── docs/                    # 动态和知识库文档
+├── blog/                    # 资讯
 ├── static/                  # Docusaurus 静态资源
 │   └── img/                 # 图片等
 ├── src/css/custom.css       # 站点样式覆盖
@@ -42,9 +43,8 @@ AI-Basecamp/
 
 主要内容放在 `docs/` 下：
 
+- `blog/`：资讯，记录 AI 行业动态、产品发布、重要论文和产业政策，访问路径为 `/blog`
 - `docs/site-updates/index.md`：动态，记录站点内容、结构和配置变更
-- `docs/news/`：资讯，记录 AI 行业动态、产品发布、重要论文和产业政策
-- `docs/news/index.md`：资讯默认页
 - `docs/knowledge-base/index.md`：知识库默认页
 - `docs/knowledge/`：知识体系
 - `docs/guides-and-tutorials/`：教程与指南
@@ -52,3 +52,21 @@ AI-Basecamp/
 - `docs/tools-and-frameworks/`：工具与框架
 - `docs/methods/`：方法论
 - `docs/resources/`：资源
+
+## Admonitions
+
+Docusaurus 默认支持 Admonitions，不需要额外安装依赖。它本质上是 Markdown 里的提示框，适合标记结论、注意事项、风险和 TODO。
+
+写法示例：
+
+```md
+:::tip 结论
+KV Cache 在长上下文和高并发下会快速增长。
+:::
+
+:::warning 注意
+只看模型权重显存是不够的，推理时还要估算 KV Cache 和运行时开销。
+:::
+```
+
+渲染效果会是页面里的提示块，比普通段落更醒目。

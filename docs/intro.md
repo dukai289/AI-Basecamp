@@ -40,7 +40,7 @@ slug: /
 
 ## 维护节奏
 
-- 每日或每周：把新看到的重要 AI 资讯放入 `docs/news/`。
+- 每日或每周：把新看到的重要 AI 资讯放入 `blog/`。
 - 站点内容、结构和配置变更记录到 `docs/site-updates/index.md`。
 - 试用新模型后：把体验和结论放入 `docs/model-reviews/`。
 - 学到稳定知识后：整理到 `docs/knowledge/`。

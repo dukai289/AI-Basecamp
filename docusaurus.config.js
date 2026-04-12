@@ -33,11 +33,33 @@ const config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
         },
-        blog: false,
+        blog: {
+          routeBasePath: "blog",
+          blogTitle: "资讯",
+          blogDescription: "AI 行业动态、产品发布、重要论文、产业政策和事件跟踪。",
+          showReadingTime: true,
+          blogSidebarTitle: "资讯",
+          blogSidebarCount: "ALL",
+        },
         theme: {
           customCss: "./src/css/custom.css",
         },
       }),
+    ],
+  ],
+
+  themes: [
+    [
+      "@easyops-cn/docusaurus-search-local",
+      {
+        hashed: true,
+        language: ["zh", "en"],
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: true,
+        docsRouteBasePath: "/",
+        blogRouteBasePath: "/blog",
+      },
     ],
   ],
 
@@ -58,8 +80,7 @@ const config = {
             label: "动态",
           },
           {
-            type: "doc",
-            docId: "news/index",
+            to: "/blog",
             position: "left",
             label: "资讯",
           },
