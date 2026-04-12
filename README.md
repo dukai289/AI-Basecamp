@@ -1,6 +1,6 @@
 # AI-Basecamp
 
-`AI-Basecamp` 是一个基于 `Docusaurus` 的 AI 内容站点，分为 `动态`、`资讯` 和 `知识库` 三部分。
+`AI-Basecamp` 是一个基于 `Docusaurus` 的 AI 内容站点，分为 "动态"、"资讯" 和 "知识库" 三部分。
 
 ## 本地开发
 
@@ -28,10 +28,11 @@ npm run serve
 
 ```text
 AI-Basecamp/
-├── docs/                    # 动态和知识库文档
+├── docs/                    # 知识库文档
 ├── blog/                    # 资讯
 ├── static/                  # Docusaurus 静态资源
 │   └── img/                 # 图片等
+├── src/pages/               # 独立页面，例如动态
 ├── src/css/custom.css       # 站点样式覆盖
 ├── docusaurus.config.js     # Docusaurus 配置
 ├── sidebars.js              # 侧边栏配置
@@ -41,11 +42,12 @@ AI-Basecamp/
 
 ## 内容维护
 
-主要内容放在 `docs/` 下：
+主要内容放在 `docs/`、`blog/` 和 `src/pages/` 下：
 
+- `src/pages/site-updates.md`：动态，记录站点内容、结构和配置变更，访问路径为 `/site-updates`
 - `blog/`：资讯，记录 AI 行业动态、产品发布、重要论文和产业政策，访问路径为 `/blog`
-- `docs/site-updates/index.md`：动态，记录站点内容、结构和配置变更
-- `docs/knowledge-base/index.md`：知识库默认页
+- `docs/intro.md`：全站默认页
+- `docs/knowledge-base.md`：知识库默认页
 - `docs/knowledge/`：知识体系
 - `docs/guides-and-tutorials/`：教程与指南
 - `docs/model-reviews/`：模型评测

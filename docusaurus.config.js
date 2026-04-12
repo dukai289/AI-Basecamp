@@ -74,8 +74,7 @@ const config = {
         },
         items: [
           {
-            type: "doc",
-            docId: "site-updates/index",
+            to: "/site-updates",
             position: "left",
             label: "动态",
           },
@@ -86,7 +85,7 @@ const config = {
           },
           {
             type: "doc",
-            docId: "knowledge-base/index",
+            docId: "knowledge-base",
             position: "left",
             label: "知识库",
           },
