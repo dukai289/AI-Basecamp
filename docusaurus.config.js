@@ -52,14 +52,20 @@ const config = {
         },
         items: [
           {
-            type: "docSidebar",
-            sidebarId: "newsSidebar",
+            type: "doc",
+            docId: "site-updates/index",
             position: "left",
             label: "动态",
           },
           {
-            type: "docSidebar",
-            sidebarId: "knowledgeSidebar",
+            type: "doc",
+            docId: "news/index",
+            position: "left",
+            label: "资讯",
+          },
+          {
+            type: "doc",
+            docId: "knowledge-base/index",
             position: "left",
             label: "知识库",
           },

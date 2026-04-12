@@ -1,8 +1,8 @@
 {
-  "label": "AI 动态",
+  "label": "资讯",
   "position": 1,
   "link": {
     "type": "generated-index",
-    "description": "AI 行业动态、产品发布、重要论文和事件跟踪。"
+    "description": "AI 行业动态、产品发布、重要论文、产业政策和事件跟踪。"
   }
 }
