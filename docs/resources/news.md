@@ -12,3 +12,6 @@ description: 关于 AI特别是LLM的资讯。
 | AI科普 | 数学生命卡兹克 | 微信公众号 |  |  |
 | AI科普 | 一念既出 | 微信公众号 |  |  |
 | AI技术科普 | 53参 | 微信公众号 |  |  |
+| 资讯 | https://www.devflokers.com/blog | 网站 |  |  |
+| 资讯 | https://aitoolly.com/ai-news | 网站 |  |  |
+| 资讯 | https://dev.to/amit_mishra_4729 | 网站 |  |  |
