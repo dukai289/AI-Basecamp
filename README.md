@@ -31,6 +31,7 @@ AI-Basecamp/
 ├── docs/                    # `知识库`文档
 ├── blog/                    # `资讯`
 ├── src/pages/               # 独立页面，例如`动态`
+├── templates/               # 写作模板，不参与站点渲染
 ├── static/                  # Docusaurus 静态资源
 │   └── img/                 # 图片等
 ├── src/css/custom.css       # 站点样式覆盖
@@ -46,6 +47,7 @@ AI-Basecamp/
 
 - `src/pages/site-updates.md`：`动态`，记录站点内容、结构和配置变更，访问路径为 `/site-updates`
 - `blog/`：`资讯`，记录 AI 行业动态、产品发布、重要论文和产业政策，访问路径为 `/blog`
+- `templates/ai-news-newsletter.md`：AI 动态 / Newsletter 写作模板，不会被 Docusaurus 渲染为页面
 - `docs/intro.md`：全站默认页
 - `docs/knowledge-base.md`：`知识库`默认页
   - `docs/knowledge/`：知识体系
