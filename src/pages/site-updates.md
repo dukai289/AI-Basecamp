@@ -6,19 +6,21 @@ title: 动态
 
 这里记录 AI-Basecamp 的内容、结构和站点配置变更，方便读者快速了解最近发生了什么。
 
-## 2026-04-14
-
-- 将 "动态" 从 `docs/` 分离到 `src/pages/site-updates.md`，避免它进入知识库文档体系。
-- 将 "资讯" 改为 "Docusaurus.blog"。
-- 通过 docusaurus-search-local 支持本地搜索功能。
 
 ## 2026-04-13
+- 知识库增加内容 "工具与框架 / 部署 / vLLM"
+- 知识库增加内容 "工具与框架 / Agent实全 / CoPaw"
+- 知识库增加内容 "知识体系 / 硬件 / GPU/加速卡"
+
+## 2026-04-12
 
 - 将项目改为 "Docusaurus" 结构。
 - 将站点内容拆分为 "动态"、"资讯"、"知识库" 3 个顶部入口。
+- 将 "资讯" 改为 "Docusaurus.blog"。
 - 新增 "2026-04-13 AI 动态"。
+- 通过 docusaurus-search-local 支持本地搜索功能。
 
-## 2026-04-12
+## 2026-04-11
 
 - 初始化 "AI-Basecamp" 内容结构。
 - 编写 README。

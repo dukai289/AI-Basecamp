@@ -32,6 +32,7 @@ const config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
+          showLastUpdateTime: true,
         },
         blog: {
           routeBasePath: "blog",
@@ -99,6 +100,12 @@ const config = {
       footer: {
         style: "light",
         copyright: `Copyright © ${new Date().getFullYear()} AI-Basecamp.`,
+      },
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+          hideable: true,
+        },
       },
       prism: {
         additionalLanguages: ["bash", "json", "powershell"],
