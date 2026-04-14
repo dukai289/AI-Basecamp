@@ -1,56 +1,89 @@
 :root {
-  --ifm-color-primary: #00856f;
-  --ifm-color-primary-dark: #007864;
-  --ifm-color-primary-darker: #006f5d;
-  --ifm-color-primary-darkest: #005c4d;
-  --ifm-color-primary-light: #00937b;
-  --ifm-color-primary-lighter: #009c83;
-  --ifm-color-primary-lightest: #00ad91;
-  --ifm-code-font-size: 95%;
-  --ifm-heading-letter-spacing: 0;
-  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    --ifm-color-primary: #00856f;
+    --ifm-color-primary-dark: #007864;
+    --ifm-color-primary-darker: #006f5d;
+    --ifm-color-primary-darkest: #005c4d;
+    --ifm-color-primary-light: #00937b;
+    --ifm-color-primary-lighter: #009c83;
+    --ifm-color-primary-lightest: #00ad91;
+    --ifm-code-font-size: 95%;
+    --ifm-heading-letter-spacing: 0;
+    --ifm-font-family-base:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
+        sans-serif;
 }
 
 .markdown table {
-  display: table;
-  width: 100%;
+    display: table;
+    width: 100%;
 }
 
 .contact-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: flex-start;
-  margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+    margin-top: 16px;
 }
 
 .contact-images img {
-  width: 240px;
-  height: 240px;
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 8px;
-  object-fit: contain;
-  background: #fff;
+    width: 240px;
+    height: 240px;
+    border: 1px solid var(--ifm-color-emphasis-200);
+    border-radius: 8px;
+    object-fit: contain;
+    background: #fff;
 }
 
 .resource-news-page {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .resource-news-page h1 {
-  font-size: 28px;
+    font-size: 28px;
 }
 
 .resource-news-page h2 {
-  font-size: 22px;
+    font-size: 22px;
 }
 
 .resource-news-page table {
-  font-size: 13px;
-  line-height: 1.45;
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 .resource-news-page table th,
 .resource-news-page table td {
-  padding: 8px 10px;
+    padding: 8px 10px;
+}
+
+.table-of-contents {
+    max-width: 180px;
+    margin-left: auto;
+    font-size: 13px;
+    line-height: 1.45;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+}
+
+.table-of-contents__left-border {
+    margin-left: auto;
+}
+
+.col--3:has(.table-of-contents),
+.mdx-page .col--2:has(.table-of-contents),
+aside:has(.table-of-contents),
+.theme-doc-toc-desktop,
+.theme-blog-toc-desktop {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.col--3:has(.table-of-contents),
+.mdx-page .col--2:has(.table-of-contents) {
+    padding-right: 0;
+}
+
+.mdx-page .row:has(> .col--2 .table-of-contents) {
+    justify-content: flex-end;
 }

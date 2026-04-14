@@ -9,12 +9,6 @@ last_update:
 # DeerFlow 2.0
 
 
-
-
-
-# DeerFlow 项目总结
-
-
 ## 一、项目概览
 
 **DeerFlow**（**D**eep **E**xploration and **E**fficient **R**esearch **Flow**）是字节跳动（ByteDance）开源的一个 **SuperAgent 编排框架**。它能够协调子代理（Sub-agents）、沙箱（Sandboxes）、记忆系统（Memory）、工具（Tools）和可扩展技能（Skills），处理从几分钟到数小时不等的复杂任务——涵盖研究、编程和创作领域 [citation:GitHub - bytedance/deer-flow](https://github.com/bytedance/deer-flow)。
