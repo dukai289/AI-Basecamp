@@ -6,6 +6,8 @@ description: 关于 AI 特别是 LLM 的资讯。
 hide_table_of_contents: true
 ---
 
+<div className="resource-news-page">
+
 # 资讯源与科普
 
 ## 已验证
@@ -82,3 +84,5 @@ hide_table_of_contents: true
 <!--| 中文开发者社区 | CSDN AI | https://www.csdn.net/ | 教程、部署、模型实测、工程问题 | 网页抓取 / 专题页监控 | 部署实操、教程型内容、中文技术长尾问题 | B | 内容量大但质量参差，需要过滤 |-->
 <!--| 开源生态 | GitHub Feeds | GitHub REST feeds API | GitHub 的 feed 入口，可拿到用户/仓库等 feed URL | API/Atom | 仓库动态、release、社区活动 | S | 适合做程序化采集 |-->
 <!--| 开源生态 | GitHub Releases Atom（按仓库） | repo/releases.atom | 单个仓库 release 更新 | Atom | 重点项目版本更新 | S | 非常适合白名单监控 |-->
+
+</div>

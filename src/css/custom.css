@@ -32,3 +32,25 @@
   object-fit: contain;
   background: #fff;
 }
+
+.resource-news-page {
+  font-size: 14px;
+}
+
+.resource-news-page h1 {
+  font-size: 28px;
+}
+
+.resource-news-page h2 {
+  font-size: 22px;
+}
+
+.resource-news-page table {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.resource-news-page table th,
+.resource-news-page table td {
+  padding: 8px 10px;
+}
