@@ -62,7 +62,7 @@
     margin-left: auto;
     font-size: 13px;
     line-height: 1.45;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     overflow-wrap: anywhere;
 }
 

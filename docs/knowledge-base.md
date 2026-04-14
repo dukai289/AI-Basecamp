@@ -6,7 +6,10 @@ displayed_sidebar: knowledgeSidebar
 
 # 知识库
 
+:::tip[note] 
 这里沉淀相对长期有效的 AI 内容，重点是基础知识、可复用经验、工具框架、教程方法和资源索引。
+:::
+
 
 ## 内容结构
 
