@@ -30,8 +30,6 @@ title: 动态
 
 ## 2026-04-11
 
-- 初始化 "AI-Basecamp" 内容结构。
-- 编写 README。
 - 新增 LLM 基础相关笔记：
   - Chat Template
   - 模型尺寸与显存估算
