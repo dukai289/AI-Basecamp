@@ -8,8 +8,6 @@ hide_table_of_contents: true
 
 # YYYY-MM-DD AI 动态
 
-<!-- truncate -->
-
 :::tip **本期焦点：**  用几句话概括 3-5 个最重要事件，例如：模型发布、产业交易、政策变化、基础设施进展。
 1. XXX  
 2. XXX  
@@ -17,6 +15,8 @@ hide_table_of_contents: true
 4. XXX  
 5. XXX  
 :::
+
+<!-- truncate -->
 
 ---
 
