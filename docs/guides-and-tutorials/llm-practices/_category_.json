@@ -1,0 +1,8 @@
+{
+  "label": "LLM工程实践",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "大模型应用、推理调用、Prompt 设计、Agent 集成、模型适配和评测复现实操。"
+  }
+}
