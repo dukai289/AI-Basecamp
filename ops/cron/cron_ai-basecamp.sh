@@ -41,8 +41,7 @@ TMP_REPORT_FILE="${ADMIN_DIR}/${REPORT_FILENAME}.tmp"
 # Runtime logs
 # =========================
 RUNTIME_LOG_DIR="/tmp"
-BUILD_LOG_FILE="${RUNTIME_LOG_DIR}/${PROJECT_NAME}-build.log"
-GOACCESS_LOG_FILE="${RUNTIME_LOG_DIR}/${PROJECT_NAME}-goaccess.log"
+RUNTIME_LOG_FILE="${RUNTIME_LOG_DIR}/${PROJECT_NAME}-cron.log"
 
 # =========================
 # Helpers
@@ -51,37 +50,55 @@ timestamp() {
   date '+%F %T'
 }
 
-log_build() {
-  echo "[$(timestamp)] $*" >> "${BUILD_LOG_FILE}"
+log() {
+  echo "[$(timestamp)] $*" >> "${RUNTIME_LOG_FILE}"
 }
 
-log_goaccess() {
-  echo "[$(timestamp)] $*" >> "${GOACCESS_LOG_FILE}"
+on_error() {
+  local exit_code=$?
+  local line_no=$1
+  log "ERROR: command failed at line ${line_no}, exit_code=${exit_code}"
+  exit "${exit_code}"
 }
+
+trap 'on_error ${LINENO}' ERR
 
 # =========================
 # Build
 # =========================
-log_build "===== start git pull + build ====="
+log "===== start git pull + build ====="
 
 cd "${PROJECT_DIR}"
-"${GIT_BIN}" pull >> "${BUILD_LOG_FILE}" 2>&1
-"${NPM_BIN}" run build >> "${BUILD_LOG_FILE}" 2>&1
+"${GIT_BIN}" pull >> "${RUNTIME_LOG_FILE}" 2>&1
+"${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
 
-log_build "===== build done ====="
+log "===== build done ====="
 
 # =========================
 # GoAccess report
 # =========================
+log "===== start goaccess ====="
+
 mkdir -p "${ADMIN_DIR}"
 
-log_goaccess "===== start goaccess ====="
+shopt -s nullglob
+NGINX_LOG_FILES=( ${NGINX_LOG_GLOB} )
+shopt -u nullglob
 
-"${ZCAT_BIN}" -f ${NGINX_LOG_GLOB} \
-  | "${GOACCESS_BIN}" - \
-      --log-format="${GOACCESS_LOG_FORMAT}" \
-      -o "${TMP_REPORT_FILE}" >> "${GOACCESS_LOG_FILE}" 2>&1
+if (( ${#NGINX_LOG_FILES[@]} == 0 )); then
+  log "ERROR: no nginx access logs matched ${NGINX_LOG_GLOB}"
+  exit 1
+fi
+
+log "Using nginx logs: ${NGINX_LOG_FILES[*]}"
+
+{
+  "${ZCAT_BIN}" -f "${NGINX_LOG_FILES[@]}" \
+    | "${GOACCESS_BIN}" - \
+        --log-format="${GOACCESS_LOG_FORMAT}" \
+        -o "${TMP_REPORT_FILE}"
+} >> "${RUNTIME_LOG_FILE}" 2>&1
 
 mv -f "${TMP_REPORT_FILE}" "${REPORT_FILE}"
 
-log_goaccess "===== goaccess done ====="
+log "===== goaccess done ====="
