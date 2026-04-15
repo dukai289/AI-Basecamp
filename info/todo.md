@@ -1,8 +1,5 @@
-# 日志与统计
-+ [x] 访问统计：目前有nginx的log了，但是没有统计
-  + [x] 使用 `logrotate` + `crontab` + `GoAccess` 每天生成一次报表(最近30天的nginx日志)
-+ [x] 日志容易无限增长
-  + 使用 `logrotate` 进行切分和压缩
+# 日志与网站统计
++ [x] 实践: 使用 `logrotate` + `crontab` + `GoAccess` 每天生成一次报表，并用 `apache2-utils` 增加公网访问认证。
 
 # 知识库内容补充
 + [x] vllm
@@ -20,3 +17,6 @@
   + [ ] 资讯采集
   + [ ] 汇总
   + [ ] 生成
+
+# CI/CD
+  + [ ] 每天定时git pull & build
