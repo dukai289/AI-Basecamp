@@ -7,8 +7,8 @@
 ---
 
 ## 1. 前提
-+ [x] 站点由 Nginx 托管
-+ [x] Nginx 已配置 `access_log`
++ [x] 站点由 `Nginx` 托管
++ [x] `Nginx` 已配置 `access_log`
 + [x] 服务器可以安装 `GoAccess` 和 `apache2-utils`
 
 ---
@@ -29,14 +29,14 @@
 + `crontab` + `GoAccess`: 定时生成静态报表
 + `apache2-utils`: 为公网访问报表增加访问认证
 
-## 3.1 安装依赖
+### 3.1 安装依赖
 ```bash
 sudo apt update
 sudo apt install goaccess
 sudo apt install apache2-utils
 ```
 
-## 3.2 logrotate 配置日志切割
+### 3.2 `logrotate` 配置日志切割
 先检查 `/etc/logrotate.d/nginx` 是否已经管理了目标日志文件。如果默认规则已经覆盖你的日志，不要再为同一批日志新增重复规则。
 
 使用 `logrotate` 按天切分日志，保留30个  
@@ -66,14 +66,14 @@ sudo apt install apache2-utils
 sudo logrotate -d /etc/logrotate.d/example-site
 ```
 
-## 3.3 `crontab` + `GoAccess` 配置定时报表
+### 3.3 `crontab` + `GoAccess` 配置定时报表
 使用 `crontab` 配置每天9点半使用 `GoAccess` 生成静态报表  
 `sudo crontab -e` 写入
 ```bash crontab
 30 9 * * * zcat -f /var/log/nginx/ai-basecamp.access.log* | /usr/bin/goaccess - --log-format=COMBINED -o /home/dukai/WorkSpace/ai-basecamp/build/admin/report_goaccess.html
 ```
 
-## 3.4 配置访问认证
+### 3.4 `apache2-utils` 配置访问认证
 使用 `apache2-utils` 生成 Basic Auth 密码文件：
 ```bash
 sudo htpasswd -c /etc/nginx/.htpasswd-goaccess dukai 
@@ -95,7 +95,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-## 3.5 访问报表
+### 3.5 访问报表
 通过站点域名访问报表页面：
 
 ```text
@@ -106,9 +106,9 @@ https://ai-basecamp.sparkhub.space/admin/report_goaccess.html
 
 ---
 
-# 4. GoAccess 知识
+## 4. GoAccess 知识
 
-## 4.1 常用命令
+### 4.1 常用命令
 查看终端报表：
 ```bash
 sudo goaccess /var/log/nginx/ai-basecamp.access.log \
@@ -128,7 +128,7 @@ sudo goaccess /var/log/nginx/ai-basecamp.access.log \
   --real-time-html
 ```
 
-# 4.2 GoAccess 面板说明
+### 4.2 面板说明
 | 面板 | 主要内容 | 用途 |
 | --- | --- | --- |
 | Unique visitors | 独立访客数、访问时间分布 | 查看站点整体访问趋势 |
@@ -156,7 +156,7 @@ sudo goaccess /var/log/nginx/ai-basecamp.access.log \
 
 ---
 
-## 6. 安全建议
+## 5. 安全建议
 
 + 报表页面不要裸露在公网，至少应启用 Basic Auth。
 + 密码文件应放在 Web 根目录之外，例如 `/etc/nginx/.htpasswd-goaccess`。

@@ -16,10 +16,9 @@ last_update:
 
 ## 1. 前提
 
-+ [x] 站点由 Nginx 托管
-+ [x] Nginx 已配置 `access_log`
++ [x] 站点由 `Nginx` 托管
++ [x] `Nginx` 已配置 `access_log`
 + [x] 服务器可以安装 `GoAccess` 和 `apache2-utils`
-+ [x] 已确认报表输出目录会被站点静态资源服务覆盖
 
 ---
 
@@ -48,7 +47,7 @@ sudo apt update
 sudo apt install goaccess apache2-utils
 ```
 
-### 3.2 配置日志切割
+### 3.2 `logrotate` 配置日志切割
 
 先检查 `/etc/logrotate.d/nginx` 是否已经管理了目标日志文件。如果默认规则已经覆盖你的日志，不要再为同一批日志新增重复规则。
 
@@ -86,7 +85,7 @@ sudo vim /etc/logrotate.d/example-site
 sudo logrotate -d /etc/logrotate.d/example-site
 ```
 
-## 3.3 `crontab` + `GoAccess` 配置定时报表
+### 3.3 `crontab` + `GoAccess` 配置定时报表
 
 使用 `crontab` 定时调用 `GoAccess`，将 Nginx 访问日志转换为静态 HTML 报表。
 
@@ -106,7 +105,7 @@ sudo crontab -e
 + `/var/www/example-site/admin/report_goaccess.html`: 报表输出文件，需要位于 Nginx 可访问的静态目录中。
 + `--log-format=COMBINED`: 适用于 Nginx 常见的 combined 日志格式。
 
-### 3.4 配置访问认证
+### 3.4 `apache2-utils` 配置访问认证
 
 使用 `apache2-utils` 生成 Basic Auth 密码文件：
 
@@ -175,7 +174,7 @@ sudo goaccess /var/log/nginx/example-site.access.log \
 
 ---
 
-## 5. GoAccess 面板说明
+### 4.2 面板说明
 
 | 面板 | 主要内容 | 用途 |
 | --- | --- | --- |
@@ -205,7 +204,7 @@ sudo goaccess /var/log/nginx/example-site.access.log \
 
 ---
 
-## 6. 安全建议
+## 5. 安全建议
 
 + 报表页面不要裸露在公网，至少应启用 Basic Auth。
 + 密码文件应放在 Web 根目录之外，例如 `/etc/nginx/.htpasswd-goaccess`。
