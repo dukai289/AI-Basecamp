@@ -3,7 +3,7 @@ title: GPU/加速卡
 tags: [GPU, 加速卡, NVIDIA, AI硬件]
 description: 关于 GPU/加速卡、显存、互联和 NVIDIA 架构的基础知识。
 last_update:
-  date: 2026-04-13
+  date: 2026-04-15
 ---
 
 # GPU/加速卡
@@ -12,12 +12,25 @@ last_update:
 本文作为 AI 硬件基础速查，重点面向模型训练、推理和部署场景。架构发布时间按 NVIDIA 公开发布节点粗略记录，具体型号和规格以厂商文档为准。
 :::
 
-## 结构单元
-GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储** 决定模型和 KV Cache 能不能放下，**通信** 决定多卡/多机协作效率。
+## 1. 基础
+### 1.1 基本概念
+ + GPU(Graphics Processing Unit *图形处理器*)
+## 1.2 分类
+ + `iGPU` (Integrated Graphics Processing Unit *集成显卡*)：运作时会借用部分的系统存储器
+ + `dGPU` (Discrete Graphics Processing Unit *独立显卡*)：指卡内的RAM只会被该卡专用
 
-### 计算部分
 
-计算部分主要看 GPU 对深度学习算子的支持，而不是只看 CUDA Core 数量。LLM 训练和推理更依赖矩阵乘法能力、混合精度支持和框架适配。
+## 2. GPU/加速卡
+## 2.1 结构单元
+GPU 可以分为三个逻辑结构：
++ **计算**: 决定算得快不快
++ **存储**: 决定模型和 KV Cache 能不能放下
++ **通信**: 决定多卡/多机协作效率。
+
+### 2.2 计算部分
+
+计算部分主要看 GPU 对深度学习算子的支持，而不是只看 CUDA Core 数量。  
+LLM 训练和推理更依赖矩阵乘法能力、混合精度支持和框架适配。
 
 | 概念 | 说明 | 关注点 |
 | --- | --- | --- |
@@ -26,9 +39,10 @@ GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储
 | CUDA | NVIDIA 的通用并行计算平台和编程模型。 | PyTorch、TensorFlow、vLLM、TensorRT-LLM 等生态通常优先支持 CUDA。 |
 | Transformer Engine | 面向 Transformer 模型的加速能力。 | Hopper 之后更重要，常和 FP8、混合精度训练/推理相关。 |
 
-### 存储部分
+### 2.3 存储部分
 
-存储部分主要看显存容量和显存带宽。对 LLM 推理来说，显存不只放模型权重，还要放 KV Cache、CUDA workspace 和框架运行时开销。
+存储部分主要看显存容量和显存带宽。  
+对 LLM 推理来说，显存不只放模型权重，还要放 KV Cache、CUDA workspace 和框架运行时开销。
 
 | 概念 | 说明 | 关注点 |
 | --- | --- | --- |
@@ -38,9 +52,10 @@ GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储
 | GDDR | 图形显存，常见于消费级或部分工作站/推理卡。 | RTX 4090、L4、L40S 等常见于开发、视觉和推理场景。 |
 | SRAM / Cache | 芯片内部高速缓存。 | 提升数据复用效率，通常不作为用户选型的显式容量指标。 |
 
-### 通信部分
+### 2.4 通信部分
 
-通信部分主要看 GPU 与 GPU、GPU 与主机、节点与节点之间的数据通道。模型越大、并行越多，通信越容易成为瓶颈。
+通信部分主要看 GPU 与 GPU、GPU 与主机、节点与节点之间的数据通道。  
+模型越大、并行越多，通信越容易成为瓶颈。
 
 | 概念 | 说明 | 常见场景 |
 | --- | --- | --- |
@@ -50,24 +65,27 @@ GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储
 | RoCE / InfiniBand | 多机 GPU 集群常用网络。 | 跨节点训练、跨节点推理、参数同步和大规模集群通信。 |
 | HCCS | 华为昇腾等加速卡间互联技术。 | 昇腾集群训练/推理场景。 |
 
-## 参数
+## 3. 参数
 
-看 GPU 规格时，建议优先关注下面这些参数。不同厂商、不同资料里的命名可能略有差异，但含义基本接近。
+看 GPU 规格时，建议优先关注下面这些参数。  
+（不同厂商、不同资料里的命名可能略有差异，但含义基本接近。）
 
 | 参数名称 | 意义 | 单位 | 举例 | 备注 |
 | --- | --- | --- | --- | --- |
-| 显存容量 | 单卡可用于存放模型权重、KV Cache 和运行时缓存的空间。 | GB / GiB | 24GB、48GB、80GB、141GB | LLM 推理最先看这个；显存不够时模型可能无法加载或并发受限。 |
+| 显存容量 | 单卡可用于存放模型权重、KV Cache 和运行时缓存的空间。 | GB / GiB | 24GB、48GB、80GB、141GB | LLM 推理时最先关注；显存不够时模型可能无法加载或并发受限。 |
 | 显存带宽 | GPU 读写显存的速度。 | GB/s、TB/s | 1TB/s、3TB/s、4.8TB/s | 对大模型推理很重要，尤其是访存瓶颈明显时。 |
 | 显存类型 | GPU 使用的显存技术。 | - | GDDR6、GDDR6X、HBM2e、HBM3、HBM3e | HBM 通常用于数据中心高端卡，带宽更高；GDDR 常见于消费级和部分推理卡。 |
 | 算力 | 某种精度下的理论计算能力。 | TFLOPS、TOPS | FP16 TFLOPS、BF16 TFLOPS、FP8 TFLOPS、INT8 TOPS | 必须看对应精度；FP32 高不代表 LLM 推理一定强。 |
 | 支持精度 | GPU 支持的数值格式。 | - | FP32、TF32、FP16、BF16、FP8、INT8、INT4 | 训练常看 BF16/FP8；推理常看 FP16/BF16/FP8/INT8/INT4。 |
 | TDP / 功耗 | 单卡典型或最大功耗。 | W | 70W、300W、700W | 影响机房供电、散热和整机部署密度。 |
-| PCIe 规格 | GPU 与主机之间的 PCIe 连接能力。 | 代际 / 通道数 | PCIe 4.0 x16、PCIe 5.0 x16 | 影响 CPU-GPU 数据传输和普通多卡服务器扩展能力。 |
 | GPU 间互联 | GPU 与 GPU 之间的高速互联能力。 | GB/s、TB/s | NVLink、NVSwitch | 多卡训练、张量并行和大模型推理更依赖它。 |
+| PCIe 规格 | GPU 与主机之间的 PCIe 连接能力。 | 代际 / 通道数 | PCIe 4.0 x16、PCIe 5.0 x16 | 影响 CPU-GPU 数据传输和普通多卡服务器扩展能力。 |
 | 单卡形态 | GPU 的硬件封装和部署形态。 | - | PCIe、SXM、OAM | SXM/HGX 类形态通常互联和散热更强；PCIe 更通用。 |
 | 驱动与软件栈 | 驱动、CUDA、框架和推理引擎的兼容情况。 | 版本号 | CUDA 12.x、Driver 550.x、vLLM、TensorRT-LLM | 生产部署要确认驱动、框架、模型和量化方式是否兼容。 |
 
-## NVIDIA Architecture
+
+## 4. 架构 
+## 4.1 NVIDIA Architecture
 
 | 架构 | 发行时间 | 代表型号 | 备注 |
 | --- | --- | --- | --- |
@@ -80,7 +98,7 @@ GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储
 | Pascal | 2016 | P100、P40、P4、GeForce GTX 10 系列 | 现在更多见于存量环境，不适合优先采购用于新 LLM 工作负载。 |
 | Maxwell 及更早 | 2014 及以前 | M40、M60、K80 等 | 主要是历史架构，现代 AI 框架和算子支持有限。 |
 
-## Ascend Architecture
+## 4.2 Ascend Architecture
 
 | 架构 / 系列 | 发行时间 | 代表型号 | 备注 |
 | --- | --- | --- | --- |
@@ -93,7 +111,9 @@ GPU 选型可以先按三件事看：**计算** 决定算得快不快，**存储
 
 Ascend 生态选型时，除了芯片本身，还要关注 CANN、MindSpore、PyTorch 适配、算子覆盖、模型迁移成本和集群互联能力。和 NVIDIA CUDA 生态相比，Ascend 更需要提前验证具体模型、推理框架和算子是否支持。
 
-## 选型速记
+---
+
+## 5. 选型
 
 | 场景 | 优先关注 |
 | --- | --- |
@@ -110,16 +130,47 @@ Ascend 生态选型时，除了芯片本身，还要关注 CANN、MindSpore、Py
 - 通信：看 PCIe、NVLink、NVSwitch 和多机网络。
 - 生产部署：看整机形态、供电、散热、驱动和软件栈，不只看单卡规格。
 
+---
+
+## 6. 常用命令 
+```bash
+# lspci
+sudo yum install pciutils
+lspci | grep -i vga
+
+# lshw
+sudo lshw -C display
+
+# smi
+## nvidia-smi
+sudo yum install nvidia-driver
+nvidia-smi
+## npu-smi
+npu-smi info
+
+
+# lsmod
+lsmod | grep nvidia
+
+
+# pip install nvitop
+nvitop
+```
+
+
 ## 参考
 
-NVIDIA：
+### GPU
+- [WikiPedia - GPU](https://zh.wikipedia.org/wiki/%E5%9C%96%E5%BD%A2%E8%99%95%E7%90%86%E5%99%A8)
+
+### NVIDIA
 
 - [NVIDIA Blackwell Platform](https://investor.nvidia.com/news/press-release-details/2024/NVIDIA-Blackwell-Platform-Arrives-to-Power-a-New-Era-of-Computing/default.aspx)
 - [NVIDIA Hopper Architecture](https://nvidianews.nvidia.com/news/nvidia-announces-hopper-architecture-the-next-generation-of-accelerated-computing)
 - [NVIDIA Ada Lovelace RTX GPU](https://nvidianews.nvidia.com/news/nvidias-new-ada-lovelace-rtx-gpu-arrives-for-designers-and-creators)
 - [NVIDIA Ada Lovelace Architecture](https://www.nvidia.com/en-us/technologies/ada-architecture/)
 
-Ascend：
+### Ascend
 
 - [Huawei: Ascend 910 and MindSpore](https://www.huawei.com/en/news/2019/8/ascend-910-mindspore)
 - [Huawei: Atlas 900 A3 SuperPoD](https://www.huawei.com/en/news/2025/9/hc-superpod-innovation)

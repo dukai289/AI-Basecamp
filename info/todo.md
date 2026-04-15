@@ -1,12 +1,12 @@
 # 日志与网站统计
 + [x] 实践: 使用 `logrotate` + `crontab` + `GoAccess` 每30分钟生成一次报表，并用 `apache2-utils` 增加公网访问认证。
-  + `5,35 * * * * zcat -f /var/log/nginx/ai-basecamp.access.log* | /usr/bin/goaccess - --log-format=COMBINED -o build/admin/report_goaccess.html`
+  + 通过 crontab 执行 `D:\WorkSpace_dukai\AI-Basecamp\ops\cron\cron_ai-basecamp.sh`，每半小时生成一次 报表
 
 # CI/CD
   + [x] 每30分钟 git pull & build
-    + `0,30 * * * * cd /home/dukai/WorkSpace/ai-basecamp && /usr/bin/git pull && /usr/bin/npm run build >> /tmp/ai-basecamp-build.log 2>&1`
+    + 通过 crontab 执行 `D:\WorkSpace_dukai\AI-Basecamp\ops\cron\cron_ai-basecamp.sh`，每半小时判断和执行一次
 
-# 资讯自动化
+# 资讯自动化 **高优先级**
   + [x] 确定信息源
   + [x] 模板
   + [x] 示例

@@ -63,11 +63,18 @@ AI-Basecamp/
 
 ---
 
-## 4. Front Matter
+## 4. 运维相关
++ nginx: `ops\nginx` `ai-basecamp.sparkhub.space`
++ CICD: `ops\cron` `git pull & npm run build + goaccess`
++ 网站统计 `goaccess` `build\admin\report_goaccess.html` `ops\cron`
+
+---
+
+## 5. Front Matter
 
 Markdown 文件开头的 `---` 区域叫 Front Matter，用来配置标题、描述、侧边栏顺序、更新时间等页面元信息。
 
-### 4.1 常用字段说明
+### 5.1 常用字段说明
 
 - `title`：页面标题，通常必写。
 - `description`：页面摘要，适合搜索结果和 SEO 展示。
@@ -81,7 +88,7 @@ Markdown 文件开头的 `---` 区域叫 Front Matter，用来配置标题、描
 - `hide_table_of_contents`：是否隐藏右侧目录。
 - `pagination_prev` / `pagination_next`：控制底部上一篇 / 下一篇；写 `null` 表示关闭。
 
-### 4.2 示例
+### 5.2 示例
 ```md
 ---
 title: vLLM 部署指南
@@ -103,12 +110,12 @@ pagination_next: null
 
 ---
 
-## 5. Admonitions
+## 6. Admonitions
 
 Docusaurus 默认支持 Admonitions，不需要额外安装依赖。它本质上是 Markdown 里的提示框，适合标记结论、注意事项、风险和 TODO。  
 渲染效果会是页面里的提示块，比普通段落更醒目。
 
-### 5.1 语法
+### 6.1 语法
 ```md
 :::type[title]
 content
@@ -116,7 +123,7 @@ content
 
 ```
 
-### 5.2 写法示例
+### 6.2 写法示例
 
 ```md
 :::tip 结论
@@ -128,7 +135,7 @@ KV Cache 在长上下文和高并发下会快速增长。
 :::
 ```
 
-### 5.3 类型
+### 6.3 类型
 
 | 类型 | 含义 | 适合场景 | 你的 AI 日报里是否常用 |
 |---|---|---|---|
