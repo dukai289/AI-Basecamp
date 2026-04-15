@@ -58,7 +58,7 @@ hide_table_of_contents: true
 
 | 日期 | 参与方 | 金额 | 内容 |
 | --- | --- | --- | --- |
-| YYYY-MM-DD | 公司 A / 公司 B | 金额或未披露 | 交易或合作内容 |
+| YYYY-MM-DD | 公司 A & 公司 B | 金额或未披露 | 交易或合作内容 |
 
 [citation:来源名](https://example.com)
 
@@ -87,8 +87,8 @@ hide_table_of_contents: true
 
 ## Sources
 
-- [来源标题](https://example.com) — 这条来源支撑了什么信息。
-- [来源标题](https://example.com) — 这条来源支撑了什么信息。
+- [来源标题](https://example.com) — *这条来源支撑了什么信息*。
+- [来源标题](https://example.com) — *这条来源支撑了什么信息*。
 
 ---
 
