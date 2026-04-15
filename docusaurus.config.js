@@ -174,7 +174,7 @@ function rehypeCitationLinks() {
 const config = {
   title: "AI-Basecamp",
   tagline: "AI knowledge base",
-  favicon: "img/logo.png",
+  favicon: "favicon.ico",
 
   url: "https://example.com",
   baseUrl: "/",
