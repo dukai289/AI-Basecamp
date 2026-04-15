@@ -19,4 +19,4 @@
   + [ ] 生成
 
 # CI/CD
-  + [ ] 每天定时git pull & build
+  + [x] 每天定(30分钟间隔) git pull & build
