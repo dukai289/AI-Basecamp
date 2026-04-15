@@ -1,9 +1,0 @@
-# ai-basecamp
-SHELL=/bin/bash
-PATH=/usr/local/bin:/usr/bin:/bin
-
-## git pull + build
-0,30 * * * * cd /home/dukai/WorkSpace/ai-basecamp && /usr/bin/git pull && /usr/bin/npm run build >> /tmp/ai-basecamp-build.log 2>&1
-
-## 过 5 分钟生成 GoAccess 报表
-5,35 * * * * mkdir -p /home/dukai/WorkSpace/ai-basecamp/build/admin && /usr/bin/zcat -f /var/log/nginx/ai-basecamp.access.log* | /usr/bin/goaccess - --log-format=COMBINED -o /home/dukai/WorkSpace/ai-basecamp/build/admin/report_goaccess.html >> /tmp/ai-basecamp-goaccess.log 2>&1
