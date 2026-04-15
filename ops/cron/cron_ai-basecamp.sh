@@ -2,6 +2,33 @@
 set -Eeuo pipefail
 
 # =========================
+# 脚本流程说明
+# =========================
+# 这个脚本设计为由 cron 每 30 分钟执行一次。
+#
+# 这个脚本里有两类任务，它们的触发规则不同：
+# 1. 站点部署：
+#    - 先检查当前跟踪的远端分支是否有新 commit。
+#    - 如果没有新 commit，就跳过 `git pull` 和 `npm run build`。
+#    - 如果有新 commit，就执行 `git pull --ff-only`，然后重新构建站点。
+#    - 这里故意使用 `--ff-only`：如果服务器上的工作区和远端产生分叉，
+#      脚本应该直接失败并写日志，而不是自动创建不可控的 merge commit。
+#
+# 2. GoAccess 报表：
+#    - 无论代码有没有更新，每次 cron 执行都要刷新访问报表。
+#    - GoAccess 必须放在可选的 build 之后执行。Docusaurus 构建会重写整个
+#      `build/` 目录，如果先生成报表再 build，新生成的
+#      `build/admin/report_goaccess.html` 可能会被删除。
+#
+# 所有运行日志统一写入：
+#   /tmp/ai-basecamp-cron.log
+#
+# 报表采用“先写临时文件，再替换正式文件”的方式生成：
+#   build/admin/report_goaccess.tmp.html -> build/admin/report_goaccess.html
+# 注意：临时文件也必须以 `.html` 结尾，因为 GoAccess 会校验输出文件扩展名，
+# 像 `report_goaccess.html.tmp` 这种文件名会被 GoAccess 拒绝。
+
+# =========================
 # Environment
 # =========================
 export SHELL=/bin/bash
@@ -64,15 +91,31 @@ on_error() {
 trap 'on_error ${LINENO}' ERR
 
 # =========================
-# Build
+# Project root
 # =========================
-log "===== start git pull + build ====="
-
 cd "${PROJECT_DIR}"
-"${GIT_BIN}" pull >> "${RUNTIME_LOG_FILE}" 2>&1
-"${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
 
-log "===== build done ====="
+# =========================
+# Git / Build
+# =========================
+log "===== check git updates ====="
+
+"${GIT_BIN}" fetch --quiet origin
+
+LOCAL_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
+REMOTE_COMMIT=$("${GIT_BIN}" rev-parse '@{u}')
+
+if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]]; then
+  log "No git updates, skip pull + build."
+else
+  log "Git updates found: ${LOCAL_COMMIT} -> ${REMOTE_COMMIT}"
+  log "===== start git pull + build ====="
+
+  "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
+  "${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
+
+  log "===== build done ====="
+fi
 
 # =========================
 # GoAccess report
