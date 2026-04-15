@@ -35,7 +35,7 @@ GOACCESS_LOG_FORMAT="COMBINED"
 # =========================
 REPORT_FILENAME="report_goaccess.html"
 REPORT_FILE="${ADMIN_DIR}/${REPORT_FILENAME}"
-TMP_REPORT_FILE="${ADMIN_DIR}/${REPORT_FILENAME}.tmp"
+TMP_REPORT_FILE="${ADMIN_DIR}/report_goaccess.tmp.html"
 
 # =========================
 # Runtime logs
