@@ -253,9 +253,9 @@ const config = {
         },
         items: [
           {
-            to: "/site-updates",
+            to: "/changelog",
             position: "left",
-            label: "动态",
+            label: "changelog",
           },
           {
             to: "/blog",
