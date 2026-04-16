@@ -22,7 +22,7 @@ slug: /
 
 ## 推荐阅读路径
 
-- LLM 入门：先看 [LLM 学习路线图](./knowledge/llm-basics/LLM学习路线图.md) 和 "知识体系 / LLM 基础" 等
+- LLM 入门：先看 [LLM 学习路线图](./knowledge/llm-basics/LLM-roadmap.md) 和 "知识体系 / LLM 基础" 等
 - 模型部署：先看显存估算、GPU、vLLM 等
 - Agent 实践：先看 Agent 开发、Agent 实例等
 - 信息跟踪：先看每日 AI 动态，如果需要获取更多资讯可以参考 [资讯与科普源](./resources/news.md)
