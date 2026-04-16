@@ -35,3 +35,12 @@ Recent commits are short, descriptive, and often Chinese, for example `0415å‘¨æŠ
 ## Security & Configuration Tips
 
 Do not publish private notes from `docs-private/` without review and sanitization. Avoid committing secrets, internal tokens, raw logs, or unpublished credentials in `ops/`, `info/`, or Markdown examples. Generated output such as `build/` and `.docusaurus/` should normally stay out of manual edits.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)

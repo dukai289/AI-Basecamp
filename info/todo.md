@@ -19,7 +19,4 @@
     + [ ] 生成：套用 newsletter 模板生成 blog/YYYY-MM-DD-ai-news.md
   
 # 知识库内容补充
-+ [x] vllm
-+ [ ] 模型部署
-+ [x] GPU/加速卡
-+ [ ] ...
++ [ ] 持续进行中

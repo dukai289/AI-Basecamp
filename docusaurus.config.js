@@ -32,7 +32,7 @@ function remarkCitationLinks() {
   // Once a citation is recognized, replace the label with a plain text node.
   // This prevents MDX from later preserving fragments like "citation", ":IT".
   function replaceText(node, value) {
-    node.children = [{type: "text", value}];
+    node.children = [{ type: "text", value }];
   }
 
   // Docusaurus passes `data.hProperties` through to the rendered link element.
@@ -68,12 +68,14 @@ function remarkCitationLinks() {
     // Fallback for malformed or not-yet-parsed citation text that still appears
     // as a raw text node. This keeps older drafts from leaking `citation:`.
     if (node.type === "text") {
-      const match = node.value.match(/^\s*\[citation\s*[:：]\s*([^\]]+)\]\(([^)\s]+)\)\s*$/i);
+      const match = node.value.match(
+        /^\s*\[citation\s*[:：]\s*([^\]]+)\]\(([^)\s]+)\)\s*$/i,
+      );
 
       if (match) {
         node.type = "link";
         node.url = match[2];
-        node.children = [{type: "text", value: match[1]}];
+        node.children = [{ type: "text", value: match[1] }];
         markCitationLink(node, match[1]);
         return;
       }
@@ -130,14 +132,16 @@ function rehypeCitationLinks() {
   // internal `citation:` marker.
   function markCitationLink(node, sourceName) {
     const className = node.properties?.className ?? [];
-    const classes = Array.isArray(className) ? className : String(className).split(/\s+/);
+    const classes = Array.isArray(className)
+      ? className
+      : String(className).split(/\s+/);
 
     node.properties = {
       ...node.properties,
       className: [...new Set([...classes.filter(Boolean), "citation-link"])],
       title: `来源：${sourceName}`,
     };
-    node.children = [{type: "text", value: sourceName}];
+    node.children = [{ type: "text", value: sourceName }];
   }
 
   function visit(node) {
@@ -199,6 +203,7 @@ const config = {
       "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        debug: false,
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
@@ -209,7 +214,8 @@ const config = {
         blog: {
           routeBasePath: "blog",
           blogTitle: "资讯",
-          blogDescription: "AI 行业动态、产品发布、重要论文、产业政策和事件跟踪。",
+          blogDescription:
+            "AI 行业动态、产品发布、重要论文、产业政策和事件跟踪。",
           showReadingTime: true,
           blogSidebarTitle: "资讯",
           blogSidebarCount: "ALL",
@@ -253,11 +259,6 @@ const config = {
         },
         items: [
           {
-            to: "/changelog",
-            position: "left",
-            label: "changelog",
-          },
-          {
             to: "/blog",
             position: "left",
             label: "资讯",
@@ -267,6 +268,11 @@ const config = {
             docId: "knowledge-base",
             position: "left",
             label: "知识库",
+          },
+          {
+            to: "/changelog",
+            position: "right",
+            label: "changelog",
           },
           // {
           //   href: "https://github.com/ai-dynamo/aiperf",
