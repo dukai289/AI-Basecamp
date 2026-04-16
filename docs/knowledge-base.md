@@ -24,7 +24,7 @@ hide_table_of_contents: true
 
 <!--## 推荐路线
 
-- [LLM 基础路线](./knowledge/llm-basics/LLM学习路线图.md)
+- [LLM 基础路线](./knowledge/LLM-roadmap.md)
 - 部署实践路线
 - Agent 实践路线
 - 模型评测路线-->
