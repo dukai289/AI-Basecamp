@@ -13,10 +13,11 @@
   + [x] 确定信息源
   + [x] 模板
   + [x] 示例
-  + [ ] 自动化：
+  + [ ] 自动化：不紧急，现在可以使用 codex + content-ops\prompts\newsletter_gen.md 来完成
     + [ ] 采集：从固定来源抓标题、链接、摘要
     + [ ] 筛选：按主题、重要性、可信度打分
     + [ ] 生成：套用 newsletter 模板生成 blog/YYYY-MM-DD-ai-news.md
   
 # 知识库内容补充
-+ [ ] 持续进行中
++ [ ] 知识体系 / LLM基础
++ [ ] 知识体系 / 工程化知识

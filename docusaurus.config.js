@@ -183,10 +183,10 @@ const rehypePlugins = [rehypeKatex, rehypeCitationLinks];
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "AI-Basecamp",
-  tagline: "AI knowledge base",
+  tagline: "面向大模型工程、Agent 实践与 AI 产业动态的知识库",
   favicon: "favicon.ico",
 
-  url: "https://example.com",
+  url: "https://ai-basecamp.sparkhub.space",
   baseUrl: "/",
 
   organizationName: "AI-Basecamp",
@@ -230,6 +230,12 @@ const config = {
         },
         theme: {
           customCss: "./src/css/custom.css",
+        },
+        sitemap: {
+          changefreq: "daily",
+          priority: 0.7,
+          ignorePatterns: ["/admin/**"],
+          filename: "sitemap.xml",
         },
         pages: {
           remarkPlugins,
@@ -279,6 +285,11 @@ const config = {
             to: "/changelog",
             position: "right",
             label: "changelog",
+          },
+          {
+            to: "/about",
+            position: "right",
+            label: "关于",
           },
           // {
           //   href: "https://github.com/ai-dynamo/aiperf",
