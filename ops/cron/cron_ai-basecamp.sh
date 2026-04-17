@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+set -Euo pipefail
 
 # =========================
 # 脚本流程说明
@@ -81,48 +81,51 @@ log() {
   echo "[$(timestamp)] $*" >> "${RUNTIME_LOG_FILE}"
 }
 
-on_error() {
-  local exit_code=$?
-  local line_no=$1
-  log "ERROR: command failed at line ${line_no}, exit_code=${exit_code}"
-  exit "${exit_code}"
+run_deploy() {
+  set -Eeuo pipefail
+  trap 'log "ERROR: deploy command failed at line ${LINENO}, exit_code=$?"' ERR
+
+  # =========================
+  # Project root
+  # =========================
+  cd "${PROJECT_DIR}"
+
+  # =========================
+  # Git / Build
+  # =========================
+  log "===== check git updates ====="
+
+  "${GIT_BIN}" fetch --quiet origin
+
+  LOCAL_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
+  REMOTE_COMMIT=$("${GIT_BIN}" rev-parse '@{u}')
+
+  if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]]; then
+    log "No git updates, skip pull + build."
+  else
+    log "Git updates found: ${LOCAL_COMMIT} -> ${REMOTE_COMMIT}"
+    log "===== start git pull + build ====="
+
+    "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
+
+    if [[ ! -d node_modules ]] || "${GIT_BIN}" diff --name-only "${LOCAL_COMMIT}" HEAD -- package.json package-lock.json | grep -q .; then
+      log "Dependency files changed or node_modules missing, run npm ci."
+      "${NPM_BIN}" ci >> "${RUNTIME_LOG_FILE}" 2>&1
+    else
+      log "Dependencies unchanged, skip npm ci."
+    fi
+
+    "${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
+
+    log "===== build done ====="
+  fi
 }
 
-trap 'on_error ${LINENO}' ERR
+DEPLOY_EXIT_CODE=0
+( run_deploy ) || DEPLOY_EXIT_CODE=$?
 
-# =========================
-# Project root
-# =========================
-cd "${PROJECT_DIR}"
-
-# =========================
-# Git / Build
-# =========================
-log "===== check git updates ====="
-
-"${GIT_BIN}" fetch --quiet origin
-
-LOCAL_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
-REMOTE_COMMIT=$("${GIT_BIN}" rev-parse '@{u}')
-
-if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]]; then
-  log "No git updates, skip pull + build."
-else
-  log "Git updates found: ${LOCAL_COMMIT} -> ${REMOTE_COMMIT}"
-  log "===== start git pull + build ====="
-
-  "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
-
-  if [[ ! -d node_modules ]] || "${GIT_BIN}" diff --name-only "${LOCAL_COMMIT}" HEAD -- package.json package-lock.json | grep -q .; then
-    log "Dependency files changed or node_modules missing, run npm ci."
-    "${NPM_BIN}" ci >> "${RUNTIME_LOG_FILE}" 2>&1
-  else
-    log "Dependencies unchanged, skip npm ci."
-  fi
-
-  "${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
-
-  log "===== build done ====="
+if (( DEPLOY_EXIT_CODE != 0 )); then
+  log "Deploy step failed with exit_code=${DEPLOY_EXIT_CODE}; continue to GoAccess report."
 fi
 
 # =========================
@@ -130,7 +133,10 @@ fi
 # =========================
 log "===== start goaccess ====="
 
-mkdir -p "${ADMIN_DIR}"
+if ! mkdir -p "${ADMIN_DIR}"; then
+  log "ERROR: failed to create admin dir: ${ADMIN_DIR}"
+  exit 1
+fi
 
 shopt -s nullglob
 NGINX_LOG_FILES=( ${NGINX_LOG_GLOB} )
@@ -143,13 +149,23 @@ fi
 
 log "Using nginx logs: ${NGINX_LOG_FILES[*]}"
 
-{
+if ! {
   "${ZCAT_BIN}" -f "${NGINX_LOG_FILES[@]}" \
     | "${GOACCESS_BIN}" - \
         --log-format="${GOACCESS_LOG_FORMAT}" \
         -o "${TMP_REPORT_FILE}"
-} >> "${RUNTIME_LOG_FILE}" 2>&1
+} >> "${RUNTIME_LOG_FILE}" 2>&1; then
+  log "ERROR: goaccess report generation failed"
+  exit 1
+fi
 
-mv -f "${TMP_REPORT_FILE}" "${REPORT_FILE}"
+if ! mv -f "${TMP_REPORT_FILE}" "${REPORT_FILE}"; then
+  log "ERROR: failed to move report into place: ${TMP_REPORT_FILE} -> ${REPORT_FILE}"
+  exit 1
+fi
 
 log "===== goaccess done ====="
+
+if (( DEPLOY_EXIT_CODE != 0 )); then
+  exit "${DEPLOY_EXIT_CODE}"
+fi
