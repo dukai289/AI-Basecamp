@@ -9,3 +9,4 @@ yarn-error.log*
 docusaurus-start*.log
 graphify-out/
 .graphify_python
+.codex/
