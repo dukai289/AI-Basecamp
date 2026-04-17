@@ -1,5 +1,8 @@
 // @ts-check
 
+const remarkMath = require("remark-math").default;
+const rehypeKatex = require("rehype-katex").default;
+
 /**
  * Normalize inline citation links before MDX turns Markdown into React code.
  *
@@ -174,6 +177,9 @@ function rehypeCitationLinks() {
   return (tree) => visit(tree);
 }
 
+const remarkPlugins = [remarkMath, remarkCitationLinks];
+const rehypePlugins = [rehypeKatex, rehypeCitationLinks];
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "AI-Basecamp",
@@ -208,8 +214,8 @@ const config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
           showLastUpdateTime: true,
-          remarkPlugins: [remarkCitationLinks],
-          rehypePlugins: [rehypeCitationLinks],
+          remarkPlugins,
+          rehypePlugins,
         },
         blog: {
           routeBasePath: "blog",
@@ -219,15 +225,15 @@ const config = {
           showReadingTime: true,
           blogSidebarTitle: "资讯",
           blogSidebarCount: "ALL",
-          remarkPlugins: [remarkCitationLinks],
-          rehypePlugins: [rehypeCitationLinks],
+          remarkPlugins,
+          rehypePlugins,
         },
         theme: {
           customCss: "./src/css/custom.css",
         },
         pages: {
-          remarkPlugins: [remarkCitationLinks],
-          rehypePlugins: [rehypeCitationLinks],
+          remarkPlugins,
+          rehypePlugins,
         },
       }),
     ],

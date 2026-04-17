@@ -1,3 +1,12 @@
+---
+title: Chat Template
+sidebar_position: 3
+tags: [Chat Template, 模型部署]
+description: 给模型拼提示词的格式模板。
+last_update:
+  date: 2026-04-17
+---
+
 # Chat Template
 
 ## 1. 为什么需要 Chat Template

@@ -1,4 +1,5 @@
 ---
+sidebar_position: 2
 title: GPU/加速卡
 tags: [GPU, 加速卡, NVIDIA, AI硬件]
 description: 关于 GPU/加速卡、显存、互联和 NVIDIA 架构的基础知识。
