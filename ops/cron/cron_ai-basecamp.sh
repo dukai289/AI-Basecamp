@@ -112,6 +112,14 @@ else
   log "===== start git pull + build ====="
 
   "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
+
+  if [[ ! -d node_modules ]] || "${GIT_BIN}" diff --name-only "${LOCAL_COMMIT}" HEAD -- package.json package-lock.json | grep -q .; then
+    log "Dependency files changed or node_modules missing, run npm ci."
+    "${NPM_BIN}" ci >> "${RUNTIME_LOG_FILE}" 2>&1
+  else
+    log "Dependencies unchanged, skip npm ci."
+  fi
+
   "${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
 
   log "===== build done ====="
