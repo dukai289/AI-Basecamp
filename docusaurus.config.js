@@ -183,7 +183,7 @@ const rehypePlugins = [rehypeKatex, rehypeCitationLinks];
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "AI-Basecamp",
-  tagline: "面向大模型工程、Agent 实践与 AI 产业动态的知识库",
+  tagline: "面向 AI 学习、实践与产业动态的知识库",
   favicon: "favicon.ico",
 
   url: "https://ai-basecamp.sparkhub.space",
@@ -263,6 +263,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      image: "img/og-image.png",
       navbar: {
         title: "AI-Basecamp",
         logo: {
