@@ -10,15 +10,16 @@ set -Euo pipefail
 # 1. 站点部署：
 #    - 先检查当前跟踪的远端分支是否有新 commit。
 #    - 如果没有新 commit，就跳过 `git pull` 和 `npm run build`。
-#    - 如果有新 commit，就执行 `git pull --ff-only`，然后重新构建站点。
+#    - 如果有新 commit，就执行 `git pull --ff-only`。
+#    - 在独立 git worktree 中执行原始 `npm run build`，避免构建时清空线上 build/。
+#    - 构建成功后再用 rsync 同步到线上 build/，最后替换 index.html。
 #    - 这里故意使用 `--ff-only`：如果服务器上的工作区和远端产生分叉，
 #      脚本应该直接失败并写日志，而不是自动创建不可控的 merge commit。
 #
 # 2. GoAccess 报表：
 #    - 无论代码有没有更新，每次 cron 执行都要刷新访问报表。
-#    - GoAccess 必须放在可选的 build 之后执行。Docusaurus 构建会重写整个
-#      `build/` 目录，如果先生成报表再 build，新生成的
-#      `build/admin/report_goaccess.html` 可能会被删除。
+#    - GoAccess 必须放在线上 build/ 同步之后执行。同步时会排除 GoAccess 报表，
+#      避免部署覆盖 `build/admin/report_goaccess.html`。
 #
 # 所有运行日志统一写入：
 #   /tmp/ai-basecamp-cron.log
@@ -40,6 +41,8 @@ export PATH=/usr/local/bin:/usr/bin:/bin
 PROJECT_NAME="ai-basecamp"
 PROJECT_DIR="/home/dukai/WorkSpace/${PROJECT_NAME}"
 OPS_DIR="${PROJECT_DIR}/ops"
+BUILD_WORKTREE_DIR="/home/dukai/WorkSpace/${PROJECT_NAME}-build-worktree"
+WORKTREE_BUILD_DIR="${BUILD_WORKTREE_DIR}/build"
 BUILD_DIR="${PROJECT_DIR}/build"
 ADMIN_DIR="${BUILD_DIR}/admin"
 
@@ -48,6 +51,7 @@ ADMIN_DIR="${BUILD_DIR}/admin"
 # =========================
 GIT_BIN="/usr/bin/git"
 NPM_BIN="/usr/bin/npm"
+RSYNC_BIN="/usr/bin/rsync"
 
 # =========================
 # GoAccess / Logs
@@ -69,6 +73,7 @@ TMP_REPORT_FILE="${ADMIN_DIR}/report_goaccess.tmp.html"
 # =========================
 RUNTIME_LOG_DIR="/tmp"
 RUNTIME_LOG_FILE="${RUNTIME_LOG_DIR}/${PROJECT_NAME}-cron.log"
+LOCK_FILE="${RUNTIME_LOG_DIR}/${PROJECT_NAME}-cron.lock"
 
 # =========================
 # Helpers
@@ -80,6 +85,51 @@ timestamp() {
 log() {
   echo "[$(timestamp)] $*" >> "${RUNTIME_LOG_FILE}"
 }
+
+prepare_build_worktree() {
+  set -Eeuo pipefail
+
+  if [[ ! -d "${BUILD_WORKTREE_DIR}/.git" ]]; then
+    log "Create build worktree: ${BUILD_WORKTREE_DIR}"
+    rm -rf -- "${BUILD_WORKTREE_DIR}"
+    "${GIT_BIN}" worktree add --detach "${BUILD_WORKTREE_DIR}" HEAD >> "${RUNTIME_LOG_FILE}" 2>&1
+  else
+    log "Reuse build worktree: ${BUILD_WORKTREE_DIR}"
+  fi
+
+  TARGET_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
+  "${GIT_BIN}" -C "${BUILD_WORKTREE_DIR}" checkout --detach "${TARGET_COMMIT}" >> "${RUNTIME_LOG_FILE}" 2>&1
+  "${GIT_BIN}" -C "${BUILD_WORKTREE_DIR}" reset --hard "${TARGET_COMMIT}" >> "${RUNTIME_LOG_FILE}" 2>&1
+}
+
+publish_build() {
+  set -Eeuo pipefail
+
+  if [[ ! -f "${WORKTREE_BUILD_DIR}/index.html" ]]; then
+    log "ERROR: staging build is missing index.html: ${WORKTREE_BUILD_DIR}"
+    return 1
+  fi
+
+  mkdir -p "${BUILD_DIR}"
+
+  "${RSYNC_BIN}" -a \
+    --exclude "/index.html" \
+    --exclude "/admin/${REPORT_FILENAME}" \
+    --exclude "/admin/report_goaccess.tmp.html" \
+    "${WORKTREE_BUILD_DIR}/" \
+    "${BUILD_DIR}/" >> "${RUNTIME_LOG_FILE}" 2>&1
+
+  cp -f "${WORKTREE_BUILD_DIR}/index.html" "${BUILD_DIR}/index.html.tmp"
+  mv -f "${BUILD_DIR}/index.html.tmp" "${BUILD_DIR}/index.html"
+
+  log "Published build to ${BUILD_DIR}"
+}
+
+exec 9>"${LOCK_FILE}"
+if ! flock -n 9; then
+  log "Another cron run is still active, skip this run."
+  exit 0
+fi
 
 run_deploy() {
   set -Eeuo pipefail
@@ -100,22 +150,41 @@ run_deploy() {
   LOCAL_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
   REMOTE_COMMIT=$("${GIT_BIN}" rev-parse '@{u}')
 
-  if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]]; then
+  NEED_BUILD=0
+
+  if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]] && [[ -f "${BUILD_DIR}/index.html" ]]; then
     log "No git updates, skip pull + build."
   else
-    log "Git updates found: ${LOCAL_COMMIT} -> ${REMOTE_COMMIT}"
+    if [[ "${LOCAL_COMMIT}" == "${REMOTE_COMMIT}" ]]; then
+      log "No git updates, but live build is missing; build current commit."
+    else
+      log "Git updates found: ${LOCAL_COMMIT} -> ${REMOTE_COMMIT}"
+    fi
     log "===== start git pull + build ====="
 
-    "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
-
-    if [[ ! -d node_modules ]] || "${GIT_BIN}" diff --name-only "${LOCAL_COMMIT}" HEAD -- package.json package-lock.json | grep -q .; then
-      log "Dependency files changed or node_modules missing, run npm ci."
-      "${NPM_BIN}" ci >> "${RUNTIME_LOG_FILE}" 2>&1
-    else
-      log "Dependencies unchanged, skip npm ci."
+    if [[ "${LOCAL_COMMIT}" != "${REMOTE_COMMIT}" ]]; then
+      "${GIT_BIN}" pull --ff-only >> "${RUNTIME_LOG_FILE}" 2>&1
+      NEED_BUILD=1
     fi
 
-    "${NPM_BIN}" run build >> "${RUNTIME_LOG_FILE}" 2>&1
+    if [[ ! -f "${BUILD_DIR}/index.html" ]]; then
+      NEED_BUILD=1
+    fi
+
+    if (( NEED_BUILD == 0 )); then
+      log "No build needed."
+      return 0
+    fi
+
+    prepare_build_worktree
+
+    if [[ ! -d "${BUILD_WORKTREE_DIR}/node_modules" ]] || { [[ "${LOCAL_COMMIT}" != "${REMOTE_COMMIT}" ]] && "${GIT_BIN}" diff --name-only "${LOCAL_COMMIT}" HEAD -- package.json package-lock.json | grep -q .; }; then
+      log "Install dependencies in build worktree."
+      (cd "${BUILD_WORKTREE_DIR}" && "${NPM_BIN}" ci) >> "${RUNTIME_LOG_FILE}" 2>&1
+    fi
+
+    (cd "${BUILD_WORKTREE_DIR}" && "${NPM_BIN}" run build) >> "${RUNTIME_LOG_FILE}" 2>&1
+    publish_build
 
     log "===== build done ====="
   fi
@@ -126,6 +195,14 @@ DEPLOY_EXIT_CODE=0
 
 if (( DEPLOY_EXIT_CODE != 0 )); then
   log "Deploy step failed with exit_code=${DEPLOY_EXIT_CODE}; continue to GoAccess report."
+fi
+
+if [[ ! -f "${BUILD_DIR}/index.html" ]]; then
+  log "ERROR: no live build found at ${BUILD_DIR}; skip GoAccess report."
+  if (( DEPLOY_EXIT_CODE != 0 )); then
+    exit "${DEPLOY_EXIT_CODE}"
+  fi
+  exit 1
 fi
 
 # =========================
