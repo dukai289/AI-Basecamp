@@ -1,0 +1,8 @@
+{
+  "label": "Agent 工程",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Agent 产品、运行时、工具、沙箱、记忆、评估与交付方法论。"
+  }
+}

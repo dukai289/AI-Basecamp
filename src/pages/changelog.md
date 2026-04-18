@@ -1,5 +1,6 @@
 ---
 title: Changelog
+description: AI-Basecamp 更新日志，记录站点内容、知识库、资讯日报和工程配置的最近变化。
 ---
 
 # Changelog *更新日志*
@@ -7,6 +8,12 @@ title: Changelog
 :::tip[note]
 这里记录 AI-Basecamp 的内容或项目变更与进展，方便读者快速了解最近发生了什么。
 :::
+
+---
+## 2026-04-18
+- 新增 "2026-04-18 AI 动态"。
+- 知识库增加内容 "方法论 / Agent 工程 / Harness Engineering"。
+- 知识库增加内容 "工具与框架 / Agent实例 / Hermes Agent"。
 
 ---
 ## 2026-04-17

@@ -1,11 +1,11 @@
 ---
 title: 关于 AI-Basecamp
-description: AI-Basecamp 是面向大模型工程、Agent 实践与 AI 产业动态的中文知识库。
+description: 了解 AI-Basecamp：面向 AI 学习、实践与产业动态的中文知识库。
 ---
 
 # 关于 AI-Basecamp
 
-AI-Basecamp 是一个面向大模型工程、Agent 实践与 AI 产业动态的中文知识库。
+AI-Basecamp 是一个面向 AI 学习、实践与产业动态的中文知识库。
 
 这里主要整理两类内容：
 

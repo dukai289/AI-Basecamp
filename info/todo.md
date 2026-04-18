@@ -1,6 +1,13 @@
-# 日志与网站统计
-+ [x] 实践: 使用 `logrotate` + `crontab` + `GoAccess` 每30分钟生成一次报表，并用 `apache2-utils` 增加公网访问认证。
-  + 通过 crontab 执行 `D:\WorkSpace_dukai\AI-Basecamp\ops\cron\cron_ai-basecamp.sh`，每半小时生成一次 报表
+# 网站基础建设
++ [x] nginx 配置
++ [x] Tagline
++ [x] OG Image
++ [x] robots.txt
++ [x] Sitemap
++ [x] Favicon
++ [x] SEO Meta
++ [x] 安全响应头
++ [x] 日志与网站统计: 使用 `logrotate` + `crontab` + `GoAccess` 定时生成网站报表，并用 `apache2-utils` 增加公网访问认证。
 
 # CI/CD
   + [x] 每30分钟 git pull & build
@@ -20,4 +27,14 @@
   
 # 知识库内容补充
 + [ ] 知识体系 / LLM基础
+  + [x] 占位
+  + [ ] 内容生产
+  + [ ] 内容整理
 + [ ] 知识体系 / 工程化知识
+  + [x] 占位
+  + [ ] 内容生产
+  + [ ] 内容整理
++ [ ] 硬件
+  + [x] 占位
+  + [ ] 内容生产
+  + [ ] 内容整理

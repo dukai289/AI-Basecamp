@@ -264,6 +264,18 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: "img/og-image.png",
+      metadata: [
+        {
+          name: "description",
+          content:
+            "AI-Basecamp 是面向 AI 学习、实践与产业动态的中文知识库，整理大模型基础、Agent 实践、工程部署、模型评测和 AI 行业资讯。",
+        },
+        {
+          name: "keywords",
+          content:
+            "AI,人工智能,大模型,LLM,Agent,AI学习,AI知识库,模型部署,模型评测,AI资讯",
+        },
+      ],
       navbar: {
         title: "AI-Basecamp",
         logo: {
@@ -285,12 +297,12 @@ const config = {
           {
             to: "/changelog",
             position: "right",
-            label: "changelog",
+            label: "Changelog",
           },
           {
             to: "/about",
             position: "right",
-            label: "关于",
+            label: "About",
           },
           // {
           //   href: "https://github.com/ai-dynamo/aiperf",

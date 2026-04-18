@@ -1,5 +1,6 @@
 ---
 title: 知识库
+description: AI-Basecamp 知识库，整理 AI 学习、LLM 基础、Agent 实践、模型部署、工程化经验、工具框架和产业动态入口。
 sidebar_position: 1
 displayed_sidebar: knowledgeSidebar
 hide_table_of_contents: true
