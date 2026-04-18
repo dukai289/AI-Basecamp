@@ -1,5 +1,6 @@
 ---
 title: CoPaw
+sidebar_position: 4
 tags: [Agent, 龙虾]
 description: 类龙虾Agent CoPaw, AgentScope团队开发。
 last_update:

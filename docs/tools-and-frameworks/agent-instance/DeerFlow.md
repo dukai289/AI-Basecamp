@@ -1,5 +1,6 @@
 ---
 title: DeerFlow 2.0
+sidebar_position: 2
 tags: [DeerFlow, Agent开发]
 description: Agent开发框架DeerFlow 2.0。
 last_update:

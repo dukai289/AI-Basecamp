@@ -1,5 +1,6 @@
 ---
 title: Hermes Agent
+sidebar_position: 3
 tags: [Hermes Agent, Agent开发, Agent实例]
 description: Hermes Agent 的定位、核心能力、GEPA 关联、安装配置、使用场景和工程注意事项。
 last_update:

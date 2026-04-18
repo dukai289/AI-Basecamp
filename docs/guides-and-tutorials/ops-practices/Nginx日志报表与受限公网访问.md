@@ -1,5 +1,6 @@
 ---
 title: Nginx 日志报表与受限公网访问
+sidebar_position: 2
 tags: [GoAccess, Nginx, 日志分析, 网站分析]
 description: 使用 GoAccess 生成 Nginx 访问日志报表，并通过 Basic Auth 限制报表页面的公网访问。
 last_update:

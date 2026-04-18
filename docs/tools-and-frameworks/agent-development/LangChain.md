@@ -1,5 +1,6 @@
 ---
 title: LangChain
+sidebar_position: 1
 tags: [LangChain, Agent开发]
 description: Agent开发框架LangChain。
 last_update:

@@ -1,7 +1,7 @@
 ---
 title: YYYY-MM-DD AI 动态
 # authors: [ai-basecamp]
-tags: [AI资讯, Newsletter, 产业动态, 大模型]
+tags: [AI资讯, Newsletter, 产业动态, 大模型] # 主题实体标签
 description: YYYY-MM-DD AI 动态，覆盖 AI 产业、产品、政策、模型生态和资本市场信息。
 hide_table_of_contents: true
 ---

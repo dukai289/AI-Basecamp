@@ -1,3 +1,8 @@
+---
+title: AIPerf
+sidebar_position: 1
+---
+
 # AIPerf
 
 项目地址：https://github.com/ai-dynamo/aiperf

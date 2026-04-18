@@ -1,5 +1,6 @@
 ---
 title: MiniCPM-o-4.5评测
+sidebar_position: 2
 tags: [MiniCPM-o-4.5, 模型评测]
 description: MiniCPM-o-4.5评测。
 last_update:
