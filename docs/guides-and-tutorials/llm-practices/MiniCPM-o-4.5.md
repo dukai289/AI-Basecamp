@@ -6,3 +6,5 @@ sidebar_position: 2
 ---
 
 # MiniCPM-o-4.5 Web Demo
+
+## 参考
