@@ -89,15 +89,17 @@ log() {
 prepare_build_worktree() {
   set -Eeuo pipefail
 
-  if [[ ! -d "${BUILD_WORKTREE_DIR}/.git" ]]; then
+  TARGET_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
+
+  if "${GIT_BIN}" -C "${BUILD_WORKTREE_DIR}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    log "Reuse build worktree: ${BUILD_WORKTREE_DIR}"
+  else
     log "Create build worktree: ${BUILD_WORKTREE_DIR}"
     rm -rf -- "${BUILD_WORKTREE_DIR}"
-    "${GIT_BIN}" worktree add --detach "${BUILD_WORKTREE_DIR}" HEAD >> "${RUNTIME_LOG_FILE}" 2>&1
-  else
-    log "Reuse build worktree: ${BUILD_WORKTREE_DIR}"
+    "${GIT_BIN}" worktree prune >> "${RUNTIME_LOG_FILE}" 2>&1
+    "${GIT_BIN}" worktree add --force --detach "${BUILD_WORKTREE_DIR}" "${TARGET_COMMIT}" >> "${RUNTIME_LOG_FILE}" 2>&1
   fi
 
-  TARGET_COMMIT=$("${GIT_BIN}" rev-parse HEAD)
   "${GIT_BIN}" -C "${BUILD_WORKTREE_DIR}" checkout --detach "${TARGET_COMMIT}" >> "${RUNTIME_LOG_FILE}" 2>&1
   "${GIT_BIN}" -C "${BUILD_WORKTREE_DIR}" reset --hard "${TARGET_COMMIT}" >> "${RUNTIME_LOG_FILE}" 2>&1
 }
