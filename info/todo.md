@@ -39,3 +39,7 @@
   + [x] 占位
   + [x] 内容生产
   + [ ] 内容审查
+
+# 有意思的内容
++ [ ] OpenBMB/VoxCPM
++ [ ] ai-dynamo/aiperf
