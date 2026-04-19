@@ -15,5 +15,5 @@
 
 1. 新笔记先放到 `notes-private/`。
 2. 需要发布时，从 `notes-private/` 复制一份到 `docs/` 对应分类目录。
-3. 在 `docs/` 版本里脱敏：域名、IP、账号、Token、Cookie、日志样例、客户/公司信息、内部路径都替换掉,确认没有真实敏感信息。
+3. 在 `docs/` 版本里脱敏(参考 `content-ops\checklists\desensitization.md` )：域名、IP、账号、Token、Cookie、日志样例、客户/公司信息、内部路径都替换掉,确认没有真实敏感信息。
 4. `notes-private/` 可以 Git 同步，同时。

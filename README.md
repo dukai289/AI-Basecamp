@@ -29,11 +29,11 @@ npm run serve
 
 ```text
 AI-Basecamp/
-├── docs-private/            # 私人笔记(未脱敏的)
+├── docs-private/            # 私人笔记(未脱敏)
 ├── docs/                    # `知识库`文档
 ├── blog/                    # `资讯`
-├── src/pages/               # 独立页面，例如 `changelog`
-├── info                     # 项目其它信息: 存放如 prompt 记录、todo文件等
+├── src/pages/               # 独立页面，例如 `Changelog` 和 `About`
+├── info                     # 项目其它信息
 │   ├── prompts              # 一些项目开发时使用的prompts
 │   ├── Docusaurus知识.md     # Docusaurus的知识与注意事项
 │   └── todo.md              # 项目todo事项
