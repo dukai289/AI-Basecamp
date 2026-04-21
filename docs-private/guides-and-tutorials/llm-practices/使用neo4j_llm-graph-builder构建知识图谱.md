@@ -31,7 +31,7 @@ AURA_INSTANCENAME=demo
 2. 登录 graph-builder: [llm-graph-builder](https://llm-graph-builder.neo4jlabs.com/) ，连接刚才创建的 Database
 3. 上传文档: 点击左侧 "Upload files" 上传文件
 4. 生成知识图谱: 点击右下 "Generate Graph" 生成知识图谱
-5. 探索知识图谱: 点击右下侧 "Preview Graph / Explore Graph in Neo4j" 跳转到 [preview](https://workspace-preview.neo4j.io/workspace/query) 探索知识图谱
+5. 探索知识图谱: 点击右下侧 "Preview Graph / Explore Graph in Neo4j" 跳转到工作台 [preview](https://workspace-preview.neo4j.io/workspace/query) 探索知识图谱
 
 ### 1.4 特点
 + 优点
@@ -119,16 +119,23 @@ yarn run dev # http://localhost:5173/
 
 ---
 
-## 5. 使用技巧
-+ 使用在线服务免费模型有 Token 量限制和模型限制，本地部署服务使用第三方模型有 TPM 限制并且花费较高。所以建议使用 **本地部署服务 + 本地部署小模型**
+## 5. 使用建议
+
++ 使用 **在线服务** 免费来体验 UI 与工作流程。
++ **本地部署服务** 配合接入第三方模型体验生成效率与效果。
++ 生产上使用 **本地部署服务 + 本地部署小模型** 降低使用成本。
 
 ---
 
 ## 6. 最佳实践
 
-本地服务 llm-graph-builder 服务
+**本地部署 llm-graph-builder 服务 + 本地部署小模型**
++ 按 "### 2.2 使用指南" 中的内容部署llm-graph-builder 服务
++ 接入模型: 在 `./frontend/.env` 和 `./backend/.env` 中配置自定义模型的 `<name>,<base_url>,<api_key>`
++ 将 `UPDATE_GRAPH_CHUNKS_PROCESSED` 和 `VITE_CHUNK_TO_COMBINE` 中的值设置大一些
++ 上传文档并生成图谱
 
-本地部署小模型
+
 ```text
 Qwen3.5-27B,http://36.129.25.244:8000,sia.2026-03-23 --SSH转发--> Qwen3.5-27B,http://47.105.98.183:8000,sia.2026-03-23
 ```
@@ -151,10 +158,13 @@ LIMIT 30;
 ---
 
 ## 参考 
-### 构建知识图谱
+#### 构建知识图谱
 + [neo4j-labs/llm-graph-builder](https://neo4j.com/labs/genai-ecosystem/llm-graph-builder/)  
 + [LLM Knowledge Graph Builder: From Zero to GraphRAG in Five Minutes](https://neo4j.com/blog/developer/graphrag-llm-knowledge-graph-builder/)
 + [neo4j/llm-graph-builder - Github](https://github.com/neo4j-labs/llm-graph-builder)
-### 数据源
+#### RAG 中使用neo4j
++ [user_guide_rag - neo4j](https://neo4j.com/docs/neo4j-graphrag-python/current/user_guide_rag.html)
++ [ToolsRetriever - neo4j](https://neo4j.com/docs/neo4j-graphrag-python/current/api.html)
+#### 数据源
 + [动物营养学报](https://www.chinajan.com/CN/home)
 + [营养学报](https://manu37.magtech.com.cn/yyxb/CN/top_download)

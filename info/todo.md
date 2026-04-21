@@ -30,7 +30,7 @@
   + [x] 占位
   + [x] 内容生产
   + [ ] 内容审查
-    + Token与概率、词向量与Embedding、Attention注意力机制
+    + Token与概率、词向量与Embedding、Attention注意力机制、位置编码
 + [x] 知识体系 / 工程化知识
   + [x] 占位
   + [x] 内容生产
@@ -40,6 +40,17 @@
   + [x] 内容生产
   + [ ] 内容审查
 
+---
+
+# 20260421
++ [x] AIPerf `docs\tools-and-frameworks\evaluation\AIPerf.md`
++ [x] 位置编码 `docs\knowledge\llm-basics\位置编码.md`
++ [x] 使用neo4j_llm-graph-builder构建知识图谱 `docs\guides-and-tutorials\llm-practices\使用neo4j_llm-graph-builder构建知识图谱.md`
++ [ ] 面向LLM的Linux服务器检查清单 `docs\guides-and-tutorials\ops-practices\面向LLM的Linux服务器检查清单.md` 
+  + [x] GPT写完了
+  + [ ] 人工审查
+
+---
+
 # 有意思的内容
 + [ ] OpenBMB/VoxCPM
-+ [ ] ai-dynamo/aiperf
