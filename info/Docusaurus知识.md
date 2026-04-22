@@ -1,3 +1,5 @@
+# Docusaurus 知识
+
 ## 1. Front Matter
 
 Markdown 文件开头的 `---` 区域叫 Front Matter，用来配置标题、描述、侧边栏顺序、更新时间等页面元信息。
@@ -17,7 +19,7 @@ Markdown 文件开头的 `---` 区域叫 Front Matter，用来配置标题、描
 - `pagination_prev` / `pagination_next`：控制底部上一篇 / 下一篇；写 `null` 表示关闭。
 
 ### 1.2 示例
-```md
+```yaml
 ---
 title: vLLM 部署指南
 description: 记录 vLLM 的定位、常用启动参数、chat template 配置和部署注意事项。
@@ -83,3 +85,38 @@ KV Cache 在长上下文和高并发下会快速增长。
 | summary | 总结 | 章节结论、段落收束 | 可用但不算主流 |
 | quote | 引述 | 引用原话、编辑摘录 | 偶尔 |
 | example | 示例 | 样例说明、案例展示 | 技术稿常用 |
+
+---
+
+# Tab 
+创建 `src\theme\MDXComponents.js`
+```js
+import MDXComponents from "@theme-original/MDXComponents";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+export default {
+  ...MDXComponents,
+  Tabs,
+  TabItem,
+};
+````
+
+重新进行 build 或者 start 后，即可使用
+
+示例
+```markdown
+<Tabs groupId="platform">
+  <TabItem value="mac" label="tab1" default>
+
+wahu wahu
+
+  </TabItem>
+
+  <TabItem value="windows" label="tab2">
+
+你好！
+
+  </TabItem>
+</Tabs>
+```

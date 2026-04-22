@@ -43,12 +43,17 @@
 ---
 
 # 20260421
-+ [x] AIPerf `docs\tools-and-frameworks\evaluation\AIPerf.md`
-+ [x] 位置编码 `docs\knowledge\llm-basics\位置编码.md`
-+ [x] 使用neo4j_llm-graph-builder构建知识图谱 `docs\guides-and-tutorials\llm-practices\使用neo4j_llm-graph-builder构建知识图谱.md`
-+ [ ] 面向LLM的Linux服务器检查清单 `docs\guides-and-tutorials\ops-practices\面向LLM的Linux服务器检查清单.md` 
++ [x] [AIPerf](docs\tools-and-frameworks\evaluation\AIPerf.md)
++ [x] [位置编码](docs\knowledge\llm-basics\位置编码.md)
++ [x] [使用neo4j_llm-graph-builder构建知识图谱](docs\guides-and-tutorials\llm-practices\使用neo4j_llm-graph-builder构建知识图谱.md)
++ [ ] [面向LLM的Linux服务器检查清单](docs\guides-and-tutorials\ops-practices\面向LLM的Linux服务器检查清单.md) 
   + [x] GPT写完了
   + [ ] 人工审查
+
+---
+
+# 20260422
++ [x] [ChatGPT Images 2.0 图像生成实测](docs\model-reviews\ChatGPT-Images-2.md)
 
 ---
 
