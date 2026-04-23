@@ -1,6 +1,6 @@
 ---
 title: ChatGPT Images 2.0
-sidebar_position: 1
+sidebar_position: -4
 tags: [ChatGPT, Images 2.0, 图像生成]
 description: ChatGPT Images 2.0 生图实测。
 last_update:

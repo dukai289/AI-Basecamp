@@ -1,6 +1,6 @@
 ---
 title: OpenBMB/VoxCPM 2测评
-sidebar_position: 3
+sidebar_position: -3
 tags: [VoxCPM, VoxCPM 2, 模型评测]
 description: VoxCPM 2 语音合成评测。
 last_update:

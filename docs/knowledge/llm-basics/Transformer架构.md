@@ -2,401 +2,278 @@
 title: Transformer 架构
 sidebar_position: 6
 tags: [Transformer, Self-Attention, LLM架构, 注意力机制]
-description: Transformer 架构的核心组件、计算流程和大语言模型中的常见变体。
+description: Transformer 的来历、经典 Encoder-Decoder 结构、核心计算流程，以及它为什么在学术和工程上都有效。
 last_update:
-  date: 2026-04-17
+  date: 2026-04-23
 ---
 
 # Transformer 架构
 
-Transformer 是现代大语言模型的基础架构。它最核心的思想是用注意力机制（Attention）建模 token 之间的关系，让模型在处理一个 token 时，可以根据上下文中其他 token 的信息动态决定“应该关注哪里”。
+:::tip[内容]
+1. Transformer 的发展脉络。
+2. 经典 Transformer 架构的设计。
+3. Transformer 为什么有效。
+:::
 
-相比 RNN 这类逐步处理序列的结构，Transformer 更适合并行训练，也更容易扩展到大模型规模。今天常见的 GPT、LLaMA、Qwen、DeepSeek、Mistral 等大语言模型，主体结构都来自 Transformer，尤其是 Decoder-only Transformer。
+Transformer 是现代大语言模型最核心的基础架构。  
 
-## 1. 整体结构
+前几篇文章已经讲过 token、embedding、注意力机制、位置编码 等概念，这一篇的重点是围绕 Transformer 回答三个更大的问题：
 
-一个 Transformer 模型通常由多层 Transformer Block 堆叠而成。
+- Transformer 是怎么来的？
+- 经典 Transformer 架构到底长什么样？
+- 它为什么能在学术上有效、在工程上也跑得起来？
 
-简化结构如下：
+一句话概括：
+
+**Transformer 用注意力机制替代了传统序列模型里“按顺序一步步处理”的主路径，让模型可以更直接地建模长距离依赖，也更容易并行训练和大规模扩展。**
+
+---
+
+## 1. 这个架构是怎么来的
+
+在 Transformer 之前，序列建模主要依赖 RNN、LSTM、GRU，后来也出现过很多基于 CNN 的序列模型。它们并不是不能做机器翻译、文本理解或生成，而是在规模继续变大时，暴露出了几个明显问题：
+
+- **顺序计算太重**：RNN 类模型天然按时间步递推，前一个状态没算完，后一个状态就没法算，训练并行性差。
+- **长距离依赖难建模**：理论上可以记很长，实际上信息在长链路上传递容易衰减。
+- **路径太长**：如果句首和句尾的两个词要发生强交互，RNN 需要通过很多步状态传递，优化难度更高。
+
+2017 年的论文 *Attention Is All You Need* 提出了 Transformer。它最关键的转变是：
+
+- 不再把“循环”当成序列建模的主干。
+- 改成让每个位置直接通过 attention 去读取其他位置的信息。
+
+这一步的意义非常大。它把序列建模从“沿时间传播信息”改成了“在一层内直接建立位置之间的联系”。  
+对于机器翻译来说，这更容易捕捉远距离依赖；对于后来的大模型来说，这种结构又天然适合大规模并行训练。
+
+---
+
+## 2. Transformer 到底是什么
+
+经典 Transformer 是一个 **Encoder-Decoder** 架构。  
+它最初是为机器翻译这类 sequence-to-sequence 任务设计的：输入一段序列，输出另一段序列。
+
+可以先把整体结构记成下面这张图：
 
 ```text
-输入 token ids
-  -> Token Embedding
-  -> Position Encoding / RoPE
-  -> Transformer Block × N
-      -> Attention
-      -> Feed Forward Network
-      -> Residual Connection
-      -> LayerNorm / RMSNorm
+输入 tokens
+  -> Embedding + Position
+  -> Encoder Stack × N
+       -> Self-Attention
+       -> Feed Forward
+  -> 得到输入序列表示
+
+目标端 tokens
+  -> Embedding + Position
+  -> Decoder Stack × N
+       -> Masked Self-Attention
+       -> Cross-Attention
+       -> Feed Forward
   -> LM Head
-  -> 下一个 token 概率分布
+  -> 输出下一个 token 的概率
 ```
 
-在 LLM 中，每一层 Transformer Block 通常包含两个主要子模块：
+如果只抓核心，Transformer 的主干其实就三件事：
 
-- Self-Attention：负责让 token 之间交换上下文信息。
-- Feed Forward Network：负责对每个 token 的表示做非线性变换和特征提炼。
+- 用 **attention** 让 token 和 token 之间交换信息。
+- 用 **FFN** 对每个位置的表示做进一步非线性加工。
+- 用 **残差连接 + 归一化** 稳定深层训练。
 
-残差连接和归一化层则负责稳定训练，让深层模型更容易优化。
+前几篇已经讲过 embedding、token、MHA 的定义，所以这里可以把它们理解成“进入网络前的表示准备”和“层内的信息交互机制”。本篇更关心这些零件如何组装成一个完整架构。
 
-## 2. Token Embedding
+---
 
-模型输入首先会被 tokenizer 转换成 token ids。Token Embedding 层会把每个 token id 映射成一个向量。
+## 3. 经典 Transformer 的结构
 
-例如：
+经典 Transformer 由两部分组成：
 
-```text
-[15496, 11, 995]
-  -> embedding lookup
-  -> [x_1, x_2, x_3]
-```
+- **Encoder**：负责读输入。
+- **Decoder**：负责边看输入、边生成输出。
 
-如果模型 hidden size 是 4096，那么每个 token 会被表示成一个 4096 维向量。
+它们的分工可以概括如下：
 
-Embedding 可以理解为模型对 token 的初始语义表示。后续每一层 Transformer Block 都会不断更新这些向量，让它们逐渐包含更丰富的上下文信息。
-
-## 3. 位置编码
-
-Self-Attention 本身不天然知道 token 的顺序。对它来说，一组 token 更像是一个集合。因此 Transformer 需要引入位置信息。
-
-常见位置编码方式包括：
-
-| 方法 | 特点 | 常见场景 |
+| 部分 | 主要作用 | 典型子模块 |
 | --- | --- | --- |
-| Absolute Position Embedding | 为每个位置学习一个位置向量 | 早期 Transformer、BERT |
-| Sinusoidal Position Encoding | 使用固定正弦余弦函数编码位置 | 原始 Transformer |
-| RoPE | 通过旋转位置编码把相对位置信息注入 Q/K | 现代 LLM 常见 |
-| ALiBi | 通过 attention bias 表示距离惩罚 | 长上下文模型中出现过 |
+| Encoder | 把输入序列编码成上下文化表示 | Self-Attention、FFN、Residual、Norm |
+| Decoder | 根据已生成内容和输入表示，逐步生成输出 | Masked Self-Attention、Cross-Attention、FFN、Residual、Norm |
 
-现代 Decoder-only LLM 中，RoPE（Rotary Position Embedding）非常常见。它不是简单把位置向量加到 token embedding 上，而是在 Attention 计算中对 Query 和 Key 做旋转变换，让模型更自然地感知相对位置。
+其中最经典的差别有两个：
 
-## 4. Self-Attention
+### Encoder
 
-Self-Attention 是 Transformer 的核心。
+Encoder 中的每个位置都可以看见输入序列中的其他位置，因此它更偏“理解”。  
+它的输出不是最终文字，而是一整段输入的上下文化表示。
 
-它的作用是：对序列中的每个 token，计算它应该关注其他 token 的程度，然后聚合相关信息。
+### Decoder
 
-### 4.1 Q、K、V
+Decoder 有两层注意力逻辑：
 
-Attention 会把每个 token 的 hidden state 投影成三个向量：
+- 第一层是 **Masked Self-Attention**：只能看当前位置左边，不能偷看未来 token。
+- 第二层是 **Cross-Attention**：去读取 Encoder 输出，把输入序列的信息引入生成过程。
 
-- Query（Q）：当前 token 想查询什么信息。
-- Key（K）：每个 token 能提供什么索引信息。
-- Value（V）：每个 token 真正提供的内容信息。
+这也是为什么经典 Transformer 很适合翻译：
 
-在代码实现里，常见模块名是：
+- Encoder 先把源语言句子读懂。
+- Decoder 再结合已经生成的目标语言片段，一步步写出结果。
 
-- `q_proj`：把 hidden state 投影成 Query。
-- `k_proj`：把 hidden state 投影成 Key。
-- `v_proj`：把 hidden state 投影成 Value。
-- `o_proj`：把 attention 输出再投影回模型 hidden size。
-
-### 4.2 Attention 公式
-
-标准 Scaled Dot-Product Attention 可以写作：
-
-$$
-\operatorname{Attention}(Q, K, V)
-= \operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
-$$
-
-其中：
-
-- $QK^\top$ 表示 Query 和 Key 的相似度。
-- $\sqrt{d_k}$ 用来缩放分数，避免维度较大时 logits 过大。
-- `softmax` 把相似度变成注意力权重。
-- 最后乘以 $V$，得到聚合后的上下文表示。
-
-直观理解：
+如果画成更紧凑的结构图，可以理解成：
 
 ```text
-当前 token 的 Query
-  和所有 token 的 Key 做匹配
-  -> 得到注意力权重
-  -> 按权重加权汇总所有 Value
+源文本 -> Encoder -> 编码表示
+目标文本前缀 -> Decoder -> 下一个 token
 ```
 
-## 5. Masked Self-Attention
+后来很多模型都从这个经典结构里做删减或变形：
 
-大语言模型通常是自回归模型：根据前面的 token 预测下一个 token。
+- **BERT** 主要保留 Encoder。
+- **GPT / LLaMA / Qwen** 主要保留 Decoder。
+- **T5 / BART** 更接近经典 Encoder-Decoder 思路。
 
-训练和推理时，当前位置不能看到未来 token。否则模型会作弊，直接利用答案后面的信息。
+所以“Transformer”不是只指一种模型家族名词，更像是一套通用积木；不同模型是在这套积木上做不同取舍。
 
-因此 Decoder-only LLM 会使用 causal mask：
+---
+
+## 4. 信息是怎么在 Transformer 里流动的
+
+从输入到输出，经典 Transformer 的计算主线可以简化成下面这样：
 
 ```text
-第 1 个 token 只能看第 1 个 token
-第 2 个 token 可以看第 1-2 个 token
-第 3 个 token 可以看第 1-3 个 token
-...
+token ids
+  -> embedding + position
+  -> 多层 attention / FFN 堆叠
+  -> 得到上下文化 hidden states
+  -> 线性映射到词表 logits
+  -> softmax / 解码
 ```
 
-对应的注意力矩阵大致是下三角结构：
-
-```text
-可见: 1
-可见: 1 1
-可见: 1 1 1
-可见: 1 1 1 1
-```
-
-这就是为什么 GPT 类模型可以一个 token 一个 token 地生成文本。
-
-## 6. Multi-Head Attention
-
-单个 Attention 头只能从一个表示空间里计算关系。Multi-Head Attention 会把 hidden state 分成多个头，让不同头学习不同类型的关系。
-
-例如：
-
-- 有些头关注语法依赖。
-- 有些头关注指代关系。
-- 有些头关注局部上下文。
-- 有些头关注远距离信息。
-- 有些头关注格式和结构边界。
-
-多头注意力的简化流程：
-
-```text
-hidden states
-  -> q_proj / k_proj / v_proj
-  -> split into heads
-  -> 每个 head 独立做 attention
-  -> concat
-  -> o_proj
-```
-
-`o_proj` 的作用是把多个 attention head 的结果重新整合回模型的 hidden size。
-
-## 7. MHA、MQA 与 GQA
-
-为了降低推理显存和 KV Cache 成本，现代 LLM 常使用不同的 Attention 变体。
-
-| 结构 | 含义 | 特点 |
-| --- | --- | --- |
-| MHA | Multi-Head Attention，每个 Q head 都有自己的 K/V head | 表达能力强，但 KV Cache 最大 |
-| MQA | Multi-Query Attention，多个 Q head 共享一组 K/V head | KV Cache 小，推理更省显存 |
-| GQA | Grouped-Query Attention，多组 Q head 共享一组 K/V head | 在效果和推理成本之间折中 |
-
-GQA 是很多现代 LLM 的常见选择。它减少了 Key/Value head 数量，从而降低长上下文和高并发场景下的 KV Cache 显存占用。
-
-## 8. Feed Forward Network
-
-Attention 负责 token 之间的信息交互，Feed Forward Network（FFN）负责对每个 token 的表示做非线性变换。
-
-在很多 LLM 中，FFN 通常是一个门控 MLP，例如 SwiGLU / GEGLU 结构。常见模块名包括：
-
-- `gate_proj`：生成门控分支，控制哪些信息通过。
-- `up_proj`：把 hidden size 扩展到更高维度。
-- `down_proj`：把扩展后的表示投影回 hidden size。
-
-简化形式可以理解为：
+如果只看一个典型 block，它内部通常是这样的节奏：
 
 ```text
 x
-  -> gate_proj + 激活函数
-  -> up_proj
-  -> 两个分支相乘
-  -> down_proj
+  -> Attention
+  -> Residual Add
+  -> Norm
+  -> FFN
+  -> Residual Add
+  -> Norm
 ```
 
-如果写成近似公式：
+不同实现会有 Pre-LN、Post-LN、RMSNorm 等差异，但本质没有变：  
+attention 负责“让位置之间互相读取信息”，FFN 负责“对每个位置各自做更强的特征变换”，残差和归一化负责“让深层网络还能稳定学下去”。
 
-$$
-\operatorname{FFN}(x) = W_{down}\left(\sigma(W_{gate}x) \odot W_{up}x\right)
-$$
+在经典 Encoder-Decoder 结构里，信息流可以再细化为：
 
-其中：
+1. 输入序列进入 Encoder，先形成一组上下文化表示。
+2. Decoder 读取目标端前缀，先做 masked self-attention。
+3. Decoder 再通过 cross-attention 去读取 Encoder 的输出。
+4. 多层堆叠后，最后一个位置的 hidden state 被送到输出层，预测下一个 token。
 
-- $W_{gate}$ 对应 `gate_proj`。
-- $W_{up}$ 对应 `up_proj`。
-- $W_{down}$ 对应 `down_proj`。
-- $\sigma$ 是激活函数，例如 SiLU。
-- $\odot$ 表示逐元素相乘。
+这套设计有一个很重要的特点：  
+**每一层都在重复做“信息聚合 + 特征加工”**。模型不是靠某一层突然理解整句话，而是靠很多层逐步把局部信息整合成更高级的表示。
 
-FFN 通常占据模型参数的大部分。很多 LoRA 微调也会选择把 `gate_proj`、`up_proj`、`down_proj` 加入 `target_modules`。
+---
 
-## 9. 残差连接
+## 5. 为什么它在学术上有效
 
-Transformer Block 中会大量使用残差连接（Residual Connection）。
+Transformer 在学术上有效，不只是因为“用了 attention”，更重要的是它把几个关键问题同时解决得比较好。
 
-简化形式：
+### 1. 更容易建模长距离依赖
 
-```text
-x = x + Attention(x)
-x = x + FFN(x)
-```
+在 RNN 中，远距离信息通常要经过很多步状态传递；在 Transformer 中，一个位置可以直接对另一个远处位置分配高权重。  
+这让远距离依赖的路径更短，优化更容易。
 
-残差连接的作用：
+### 2. 表达能力更强
 
-- 保留原始信息。
-- 缓解深层网络训练困难。
-- 让梯度更容易反向传播。
-- 支持模型逐层增量更新表示。
+不同注意力头可以学习不同关系模式，例如：
 
-没有残差连接，几十层甚至上百层的 Transformer 会更难稳定训练。
+- 词法和句法关系
+- 指代关系
+- 局部邻近关系
+- 远距离结构依赖
 
-## 10. LayerNorm 与 RMSNorm
+它不需要人为规定“该记住什么规则”，而是通过训练自己学会哪些位置值得关注。
 
-归一化层用于稳定隐藏状态的数值分布。
+### 3. 分层表示更自然
 
-常见方式包括：
+Transformer 的每一层都在更新 token 表示。  
+浅层更偏局部模式，深层更偏抽象语义和任务相关表示。这种逐层抽象的方式，与深度学习擅长的“表示学习”路径高度一致。
 
-| 方法 | 特点 |
-| --- | --- |
-| LayerNorm | 对 hidden dimension 做均值和方差归一化 |
-| RMSNorm | 只使用均方根做归一化，不减均值，计算更简单 |
+### 4. 训练目标很通用
 
-现代 LLM 中 RMSNorm 很常见，例如 LLaMA 系列使用 RMSNorm。
+无论是 encoder-only、decoder-only，还是 encoder-decoder，Transformer 都可以和自监督目标很好结合：
 
-归一化位置也有区别：
+- masked language modeling
+- next token prediction
+- seq2seq generation
 
-- Post-LN：先做子层，再做归一化。
-- Pre-LN：先归一化，再做子层。
+这使它不仅能做单一任务，还能在统一框架下迁移到理解、生成、翻译、摘要、代码、Agent 等多种任务。
 
-现代大模型多采用 Pre-LN 或类似结构，因为深层训练更稳定。
+换句话说，Transformer 的学术价值不只是“效果更好”，而是它提供了一种更通用的序列表示学习框架。
 
-## 11. Decoder-only、Encoder-only 与 Encoder-Decoder
+---
 
-Transformer 有三种常见架构形态。
+## 6. 为什么它在工程上也有效
 
-| 架构 | 代表模型 | 适合任务 |
+很多架构论文在学术上成立，但工程上不一定能扩展。Transformer 特别强的一点是：**它不只好学，而且好堆。**
+
+### 1. 并行训练友好
+
+训练阶段，序列中很多位置可以并行计算，这和 GPU / TPU 的大规模矩阵计算非常匹配。  
+相比 RNN 的逐步递推，这一点在大数据、大模型训练时优势巨大。
+
+### 2. 结构规则、模块化强
+
+Transformer block 高度重复，几乎就是同一种层不断堆叠。  
+这对工程实现很友好：
+
+- 更容易做分布式切分
+- 更容易写高性能 kernel
+- 更容易做量化、蒸馏、LoRA、并行推理
+
+### 3. 扩展规律比较稳定
+
+层数、hidden size、head 数、FFN 维度、上下文长度，都可以较系统地扩展。  
+这使得 Transformer 很适合做“规模化实验”，也更容易形成 scaling law 这类经验规律。
+
+### 4. 生态围绕它高度成熟
+
+今天主流训练框架、推理引擎、显卡 kernel 优化、KV Cache 管理、量化方法、MoE 路由甚至 Agent 框架，很多都优先围绕 Transformer 家族构建。  
+一旦整个生态都在为一种架构优化，它的工程优势会被进一步放大。
+
+当然，Transformer 也有明显代价：
+
+- attention 计算会随序列长度变重
+- 长上下文推理时 KV Cache 占用大
+- 真正部署到高并发场景时，显存和带宽压力都很明显
+
+所以它不是“没有缺点”，而是“优点足够大，大到值得整个行业为它继续做优化”。
+
+---
+
+## 7. 经典 Transformer 与现代 LLM 的关系
+
+今天讲大语言模型时，很多人说“Transformer 架构”，其实通常指的是 **经典 Transformer 的变体**，而不是 2017 年论文里的原样实现。
+
+现代 LLM 大多采用 **Decoder-only Transformer**，也就是：
+
+- 保留 Transformer 的 block 设计
+- 保留 masked self-attention
+- 保留 FFN、残差、归一化等主干
+- 去掉经典 Encoder-Decoder 里的 Encoder 和 cross-attention 主体
+
+这样做的原因很现实：  
+对于通用文本生成，`next token prediction` 本身就和 Decoder-only 结构非常匹配，训练和推理链路都更直接。
+
+因此可以把关系理解成：
+
+| 架构 | 代表思路 | 常见用途 |
 | --- | --- | --- |
-| Encoder-only | BERT、RoBERTa | 分类、检索、理解、Embedding |
-| Decoder-only | GPT、LLaMA、Qwen、DeepSeek | 文本生成、对话、代码、Agent |
-| Encoder-Decoder | T5、BART | 翻译、摘要、文本到文本转换 |
+| Encoder-only | 保留“读懂输入”的部分 | 表示学习、分类、检索、Embedding |
+| Encoder-Decoder | 保留经典完整结构 | 翻译、摘要、文本转换 |
+| Decoder-only | 保留“自回归生成”的部分 | 聊天、写作、代码、通用 LLM |
 
-### 11.1 Encoder-only
+从历史上看，Transformer 先解决了“序列怎么更有效地建模”；从产业上看，Decoder-only Transformer 又把这套结构推到了超大规模。  
+所以现代 LLM 并不是“取代了 Transformer”，而是把 Transformer 的某一种变体扩展到了极致。
 
-Encoder-only 模型通常使用双向 Attention。每个 token 可以看到左右两侧上下文，因此适合理解任务。
+最后可以把本篇收成一句话：
 
-它通常不直接用于自回归生成。
-
-### 11.2 Decoder-only
-
-Decoder-only 模型使用 causal mask，只能看当前位置之前的信息。
-
-现代 LLM 多数是 Decoder-only，因为它非常适合下一个 token 预测：
-
-```text
-P(x_t | x_1, x_2, ..., x_{t-1})
-```
-
-训练时，模型学习根据前文预测下一个 token；推理时，模型把刚生成的 token 追加到上下文里，再预测下一个 token。
-
-### 11.3 Encoder-Decoder
-
-Encoder-Decoder 模型包含两个部分：
-
-- Encoder 读取输入。
-- Decoder 根据 Encoder 输出生成目标序列。
-
-这种结构在翻译、摘要等 seq2seq 任务中很常见，但当前通用聊天 LLM 主流是 Decoder-only。
-
-## 12. LM Head 与下一个 Token 预测
-
-Transformer 最后一层输出每个位置的 hidden state。LM Head 会把 hidden state 映射到词表大小的 logits。
-
-如果词表大小是 150,000，模型会为下一个 token 输出 150,000 个分数。
-
-简化流程：
-
-```text
-last hidden state
-  -> LM Head
-  -> logits
-  -> softmax
-  -> token probability
-  -> sampling / greedy decode
-  -> next token
-```
-
-训练时常用交叉熵损失：
-
-$$
-\mathcal{L} = -\sum_t \log P(x_t \mid x_{<t})
-$$
-
-这就是“预测下一个 token”的基础目标。
-
-## 13. 训练与推理的差异
-
-训练和推理都使用同一个 Transformer，但计算方式有明显差异。
-
-| 阶段 | 特点 |
-| --- | --- |
-| 训练 | 一次输入完整序列，使用 causal mask 并行计算所有位置的 loss |
-| Prefill | 推理时先处理完整输入 prompt，生成 KV Cache |
-| Decode | 每次生成一个或一小批 token，复用 KV Cache |
-
-KV Cache 保存历史 token 的 Key 和 Value。这样生成新 token 时，不需要重复计算所有历史 token 的 K/V。
-
-这也是为什么推理服务里要关注：
-
-- 输入长度影响 prefill 成本。
-- 输出长度影响 decode 成本。
-- 上下文长度和并发影响 KV Cache 显存。
-
-## 14. Transformer Block 中常见模块名
-
-阅读模型代码、LoRA 配置或权重文件时，经常会看到这些模块名。
-
-| 模块名 | 所属部分 | 作用 |
-| --- | --- | --- |
-| `embed_tokens` | Embedding | token id 到向量的映射 |
-| `q_proj` | Attention | 生成 Query |
-| `k_proj` | Attention | 生成 Key |
-| `v_proj` | Attention | 生成 Value |
-| `o_proj` | Attention | 整合多头 attention 输出 |
-| `gate_proj` | FFN | 门控分支，控制信息流 |
-| `up_proj` | FFN | 升维，扩大中间表示维度 |
-| `down_proj` | FFN | 降维，回到 hidden size |
-| `input_layernorm` | Norm | Attention 前归一化 |
-| `post_attention_layernorm` | Norm | FFN 前归一化 |
-| `lm_head` | 输出层 | hidden state 到词表 logits |
-
-这些名称在 LLaMA、Qwen、Mistral 等模型中很常见，但不同模型实现可能略有差异。
-
-## 15. 为什么 Transformer 适合大模型
-
-Transformer 适合扩展到大模型，主要有几个原因：
-
-- 并行训练能力强：训练时可以并行处理序列中的多个位置。
-- 表达能力强：Attention 能直接建模长距离 token 关系。
-- 结构模块化：层数、hidden size、head 数、FFN 维度都可以扩展。
-- 工程生态成熟：GPU kernel、推理框架、分布式训练和量化方法都围绕 Transformer 深度优化。
-- 适合自监督训练：只需要大量文本就能做下一个 token 预测。
-
-它的主要代价是 Attention 计算和 KV Cache 会随序列长度增长。长上下文、高并发推理和超大模型部署都需要额外的工程优化。
-
-## 16. 常见误区
-
-### 16.1 Attention 就等于解释能力
-
-Attention 权重可以提供一些参考，但不能简单等同于“模型为什么这么回答”。模型内部表示经过多层变换，最终行为不只由某一层 attention 权重决定。
-
-### 16.2 Transformer 天然理解顺序
-
-Self-Attention 本身不包含顺序信息，必须依赖位置编码或相关机制。
-
-### 16.3 参数都在 Attention 里
-
-不是。LLM 中 FFN 通常占据大量参数，甚至是参数量主要来源之一。
-
-### 16.4 上下文越长效果一定越好
-
-长上下文提供更多信息，但也增加计算、显存和注意力干扰。实际应用中仍然需要检索、摘要、裁剪和上下文管理。
-
-## 17. 总结
-
-Transformer 的核心是：用 Self-Attention 在 token 之间传递信息，用 FFN 对每个 token 的表示做非线性加工，再通过残差连接和归一化稳定深层训练。
-
-对现代 LLM 来说，最常见的是 Decoder-only Transformer。它通过 causal mask 做下一个 token 预测，训练时并行学习，推理时依靠 KV Cache 逐步生成。
-
-理解 Transformer 架构时，建议抓住四条主线：
-
-- token 如何变成向量。
-- Self-Attention 如何让 token 读取上下文。
-- FFN 如何加工每个 token 的表示。
-- 推理时 KV Cache 如何让自回归生成更高效。
-
-掌握这些之后，再看 LoRA 的 `target_modules`、量化的权重量化对象、推理服务的 KV Cache、上下文长度和模型性能指标，会更容易串起来。
+> 经典 Transformer 是一套用 attention 组织序列信息流的通用架构；现代大模型则是在这套架构上，沿着更适合大规模生成的方向持续演化出来的。

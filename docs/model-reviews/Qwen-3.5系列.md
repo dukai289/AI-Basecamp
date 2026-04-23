@@ -1,6 +1,6 @@
 ---
 title: Qwen-3.5系列评测
-sidebar_position: 1
+sidebar_position: -1
 tags: [Qwen-3.5, 模型评测]
 description: Qwen-3.5系列评测。
 last_update:

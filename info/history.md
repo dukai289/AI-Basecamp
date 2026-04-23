@@ -55,6 +55,11 @@
 # 20260422
 + [x] [ChatGPT Images 2.0 图像生成实测](docs\model-reviews\ChatGPT-Images-2.md)
 
+# 20260423
++ [ ] "2026-04-23 AI 动态"
++ [x] [面向LLM的Linux服务器检查清单](docs\guides-and-tutorials\ops-practices\面向LLM的Linux服务器检查清单.md) 
+  + [x] 人工审查
+
 ---
 
 # 有意思的内容
