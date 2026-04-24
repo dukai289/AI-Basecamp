@@ -329,6 +329,7 @@ aiperf profile \
 
 这里显式指定 `--tokenizer`，是为了让 AIPerf 能计算输入/输出 token 相关指标。
 
+
 ---
 
 ## 5. 使用技巧
@@ -340,6 +341,13 @@ aiperf profile \
 - 压测时要区分固定并发和固定请求速率：前者看并发承载，后者更像线上流量到达模式。
 - 结果不要只看平均值，p90 / p99 更容易暴露排队、抖动和尾延迟问题。
 - 使用公共数据集或自定义 trace 时，要确认数据分布和真实业务相似，否则压测结果只能作为参考。
+- 如果任务运行时 报了跟 tokenizer 有关的错误，可以去 HuggingFace 上下载模型对应的 tokenizer 配置，包括下面的几个文件：
+  + `config.json`
+  + `tokenizer.json`
+  + `tokenizer_config.json`
+  + `vocab.json`
+
+  然后在命令中使用 `--tokenizer` 手动指定一下 tokenizer 目录的位置 
 
 ---
 

@@ -8,7 +8,8 @@ last_update:
 ---
 
 # ChatGPT Images 2.0 图像生成实测
-:::tip[目的]
+
+:::tip[内容]
 ChatGPT Images 2.0 的介绍、特点与实测。
 :::
 

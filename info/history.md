@@ -62,5 +62,10 @@
 
 ---
 
+# 20260424
++ [ ] [GPT-5.5 实测](docs\model-reviews\GPT-5.5.md)
+
+---
+
 # 有意思的内容
 + [ ] OpenBMB/VoxCPM
