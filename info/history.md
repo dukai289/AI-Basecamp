@@ -67,5 +67,13 @@
 
 ---
 
+# 20260425
++ [x] 为本项目构建了 阿里云云效流水线: git push 触发自动部署
+
+---
+
+# 20260427
++ [x] 服务器 crontab 加上了 goaccess(云效流水线没有goaccess) 
+
 # 有意思的内容
 + [ ] OpenBMB/VoxCPM

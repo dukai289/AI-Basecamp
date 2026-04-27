@@ -3,3 +3,4 @@ PATH=/usr/local/bin:/usr/bin:/bin
 
 # ai-basecamp: git pull + npm run build + goaccess
 0,30 * * * * /home/dukai/WorkSpace/ai-basecamp/ops/cron/cron_ai-basecamp.sh
+0,30 * * * * mkdir -p /home/dukai/WorkSpace/ai-basecamp/admin && zcat -f /var/log/nginx/ai-basecamp.access.log* | /usr/bin/goaccess - --log-format=COMBINED -o /home/dukai/WorkSpace/ai-basecamp/admin/report_goaccess.html
