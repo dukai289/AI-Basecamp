@@ -79,7 +79,7 @@ token id
 
 对应阅读：
 
-- [词向量与 Embedding](./词向量与Embedding.md)
+- [词向量与 Embedding](./Embedding.md)
 
 ## 3. 为什么需要注意力机制
 
@@ -126,7 +126,7 @@ Self-Attention 本身不天然知道 token 顺序。对它来说，一组 token 
 
 对应阅读：
 
-- [位置编码](./位置编码.md)
+- [位置编码](./PositionEmbedding.md)
 
 ## 5. Transformer 是主体结构
 

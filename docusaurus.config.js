@@ -180,6 +180,24 @@ function rehypeCitationLinks() {
 const remarkPlugins = [remarkMath, remarkCitationLinks];
 const rehypePlugins = [rehypeKatex, rehypeCitationLinks];
 
+function silenceMermaidLanguageServerTypesWarning() {
+  return {
+    name: "silence-mermaid-language-server-types-warning",
+    configureWebpack() {
+      return {
+        ignoreWarnings: [
+          {
+            module:
+              /vscode-languageserver-types[\\/]lib[\\/]umd[\\/]main\.js$/,
+            message:
+              /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+          },
+        ],
+      };
+    },
+  };
+}
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "AI-Basecamp",
@@ -245,6 +263,8 @@ const config = {
       }),
     ],
   ],
+
+  plugins: [silenceMermaidLanguageServerTypesWarning],
 
   themes: [
     "@docusaurus/theme-mermaid",
