@@ -1,5 +1,5 @@
 ---
-title: 词向量与 Embedding
+title: Embedding 向量化
 sidebar_position: 3
 tags: [Embedding, token embedding, embedding 矩阵, LLM基础]
 description: token embedding、embedding 矩阵和向量空间的基础概念。
@@ -7,15 +7,15 @@ last_update:
   date: 2026-04-18
 ---
 
-# 词向量与 Embedding
+# Embedding *向量化*
 
 :::tip[目的]
 1. 理解 Embedding 如何把离散的 token id 变成模型可以计算的向量。
-2. 理解向量如何进入 Transformer、形成 hidden state，并通过 LM Head 转成下一个 token 的 logits。
-3. 区分两个概念：LLM 内部的 token embedding，和 RAG / 检索系统中面向整段文本的 text embedding。
+2. 理解向量如何进入 Transformer 生成 hidden state，并通过 LM Head 转成 logits。
+3. 区分两个概念：LLM 内部的 token embedding，和检索系统中面向整段文本的 text embedding。
 :::
 
-在进入大语言模型之前，文本会先被 tokenizer 切成 token，再被映射到 token id。
+在进入大语言模型之前，文本会先被 tokenizer 切分成 token，并且映射到 token id。
 
 但 token id 只是离散编号，本身不表达语义。Embedding 的作用，就是把这些离散编号转换成模型可以计算的连续向量。
 
@@ -32,9 +32,9 @@ last_update:
 Tokenizer 会把文本切分成 token ，并匹配对应的 token id：
 
 ```text
-文本:   猫 喜欢 鱼
-Token 序列: ["猫", " 喜欢", " 鱼"]
-ID 序列:    [1357, 2468, 9753]
+文本: 猫喜欢鱼
+Tokens: ["猫", " 喜欢", " 鱼"]
+Token Ids: [1357, 2468, 9753]
 ```
 
 这些 ID 只是词表中的编号，编号之间的大小关系没有语义。
@@ -61,7 +61,7 @@ Embedding lookup 可以理解为查表：模型一般会维护一个 embedding �
 token_id -> embedding_matrix[token_id] -> vector
 ```
 
-假设词表大小是 50,000，hidden size 是 4，那么 embedding 矩阵可以想象成：
+假设词表大小是 50,000，embedding 维度是 4，那么 embedding 矩阵可以想象成：
 
 | token id | embedding vector |
 | :---: | :---: |
@@ -71,18 +71,9 @@ token_id -> embedding_matrix[token_id] -> vector
 | ... | ... |
 | 49,999 | `[0.81, 0.24, -0.15, -0.47]` |
 
-真实模型的 hidden size 通常远大于 4，可能是 768、2048、4096、8192 或更高。
+真实模型的 embedding 维度通常远大于 4，可能是 768、2048、4096、8192 或更高。
 
-```mermaid
-flowchart LR
-    Text[文本] --> Tok[Tokenizer]
-    Tok --> IDs[Token IDs]
-    IDs --> Lookup[Embedding Lookup]
-    Lookup --> Vecs[Token Vectors]
-    Vecs --> Transformer[Transformer Blocks]
-```
-
-Embedding lookup 本身不是复杂计算，它更像“按 token id 取出对应向量”。
+Embedding lookup 本身不是复杂计算，它更像"按 token id 取出对应向量"。
 
 ---
 
@@ -94,7 +85,7 @@ Embedding 矩阵的形状通常是：
 ```text
 vocab_size x hidden_size
 ```
-- `vocab_size` 是词表大小，也就是模型能直接表示多少个 token。词表越大，embedding 矩阵行数越多。
+- `vocab_size` 是词表大小，也就是模型能直接表达多少个 token。词表越大，embedding 矩阵行数越多。
 - `hidden_size` 是每个 token 向量的维度，它决定了 Transformer 内部每个位置的表示宽度。如果一个模型 hidden size 是 4096，那么每个 token 在进入 Transformer 前，会被表示成一个 4096 维向量。
 
 例如：
@@ -129,18 +120,18 @@ Embedding 的直觉是：语义或用法相近的对象，在向量空间中应�
 
 例如，一个训练良好的语义 embedding 空间中：
 
-- “猫”和“狗”可能更近。
-- “北京”和“上海”可能更近。
-- “显存”和“GPU”可能更近。
-- “合同审查”和“法律条款”可能更近。
+- "猫"和"狗"可能更近。
+- "北京"和"上海"可能更近。
+- "显存"和"GPU"可能更近。
+- "合同审查"和"法律条款"可能更近。
 
-常见相似度度量方式包括：
+而常见相似度度量方式包括：
 
 | 方法 | 含义 |
 | :---: | :---: |
-| Cosine similarity *余弦相似度* | 看两个向量方向是否接近 |
-| Dot product *点积/内积* | 看两个向量点积大小 |
-| Euclidean distance *欧式距离* | 看两个向量几何距离 |
+| Cosine Similarity *余弦相似度* | 看两个向量方向是否接近 |
+| Dot Product *点积/内积* | 看两个向量点积大小 |
+| Euclidean Distance *欧式距离* | 看两个向量几何距离 |
 
 RAG 和向量检索里最常见的是 cosine similarity 或 dot product。
 
@@ -186,9 +177,9 @@ input vector = token embedding + position information
 
 ## 6. Hidden State 与 Token Embedding
 
-Token embedding 是进入模型前的初始表示。Hidden state 是经过 Transformer 层处理后的上下文表示。
+Token embedding 是 token 进入模型前的初始表示，Hidden state 是经过 Transformer 层处理后上下文的表示。
 
-| 概念 | 位置 | 是否包含上下文 |
+| 概念 | 位置 | 包含内容 |
 | :---: | :---: | :---: |
 | Token embedding | 输入层 | 不包含或几乎不包含上下文 |
 | Hidden state | Transformer 中间层 / 输出层 | 包含上下文 |
@@ -233,7 +224,7 @@ hidden_size x vocab_size
 
 ---
 
-## 8. **Embedding 的完整流程**
+## 8. Transformer 中的 Token Embedding
 
 在《Token 与概率》篇 **处理 token的完整流程** 中有一步是：
 
@@ -305,7 +296,7 @@ RAG 系统中，text embedding 常用于召回相关文档。
 3. 向量存储：把向量写入向量数据库。
 4. query embedding: 用户提问时，把 query text 也转成向量。
 5. 召回 / 相似度匹配：在向量库中搜索最相似的向量，对应到 chunk。
-6. 生成：把召回内容放进生成模型作为上下文。
+6. 生成：把召回内容(即 chunk)放进生成模型作为上下文。
 
 ```mermaid
 flowchart TD
@@ -323,15 +314,15 @@ RAG 里的 embedding 不负责生成答案，它负责“找材料”。生成�
 
 ---
 
-### 为什么 Embedding 检索会失败
+### 为什么 Embedding 检索可能会失败
 
 Embedding 检索很有用，但不是万能的。
 
 常见失败原因：
 
-1. Chunk 切分不合理：chunk 若太短，语义不完整；chunk 若太长，向量会混合多个主题，检索不准。
+1. Chunk 切分不合理：如果 chunk 太短，语义不完整；如果 chunk 太长，向量会混合多个主题，检索不准。
 
-2. Query 和文档表达不一致：用户问“怎么降低首 token 延迟”，文档写的是 “TTFT 优化”。如果 embedding 模型没有很好捕捉这层同义关系，可能召回失败。
+2. Query 和文档表达不一致：例如用户问"怎么降低首 token 延迟"，文档写的是 "TTFT 优化"。如果 embedding 模型没有很好捕捉这层同义关系，可能导致召回失败。
 
 3. 专有名词和代码符号弱：Embedding 模型对自然语言语义通常更强，但对精确符号、ID、函数名、错误码、版本号可能不如关键词搜索稳定。
 
@@ -345,25 +336,16 @@ Embedding 检索很有用，但不是万能的。
 
 ###   Embedding 的维度并非越高越好
 
-更高的 Embedding 维度可以表达更复杂的信息，但也会带来：
+更高的 Embedding 维度可以表达更复杂的信息，但也会带来更高的存储和检索计算成本，以及更慢的向量库构建。
 
-- 更高存储成本。
-- 更高检索计算成本。
-- 更高索引内存占用。
-- 更慢的向量库构建和查询。
+选择 embedding 模型或者服务时，除了看维度大小，还要关注：
 
-选择 embedding 模型时，除了看维度大小，还要看：
-
-| 指标 | 说明 |
-| :---: | :---: |
-| 任务效果 | 在你的数据和 query 上召回是否好 |
-| 语言覆盖 | 中文、英文、代码、专业术语是否适配 |
-| 上下文长度 | 能否处理你的 chunk 长度 |
-| 向量维度 | 存储和检索成本 |
-| 速度 | 批量入库和在线查询延迟 |
-| 成本 | API 或自部署推理成本 |
-
-工程上最重要的是用自己的数据做召回评测。
+- 任务效果: 在你的数据和 query 上召回是否好。
+- 语言覆盖: 中文、英文、代码、专业术语是否适配。
+- 上下文长度: 能否处理你的 chunk 长度。
+- 向量维度: 涉及存储、检索、构建成本。
+- 速度: 批量入库和在线查询延迟。
+- 成本: API 或自部署推理成本。
 
 ---
 
@@ -373,7 +355,7 @@ Embedding 不只用于 RAG，也常用于分类、聚类、去重等场景。
 
 #### 分类
 
-可以把文本转成 embedding，再用一个简单分类器做意图识别、主题分类、风险分类。
+可以把文本转成 embedding，再用一个简单分类器做意图识别、主题分类、风险分类等。
 
 ```text
 文本 -> embedding -> classifier -> 类别
@@ -391,13 +373,13 @@ Embedding 不只用于 RAG，也常用于分类、聚类、去重等场景。
 
 ### 常见误区
 
-1. Embedding 就等于语义：不完全是。Embedding 是模型学到的表示，通常包含语义信息，但也可能受到训练数据、任务目标、语言分布和模型结构影响。
+- Embedding 就等于语义：不完全是。Embedding 是模型学到的表示，通常包含语义信息，但也可能受到训练数据、任务目标、语言分布和模型结构影响。
 
-2. 向量相似就一定相关：不一定。向量相似表示模型认为表达接近，但不保证能回答用户问题，也不保证事实正确。
+- 向量相似就一定相关：不一定。向量相似表示模型认为表达接近，但不保证能回答用户问题，也不保证事实正确。
 
-3. RAG 只要有 embedding 就够：不够。RAG 还需要 chunk、metadata、hybrid search、rerank、上下文压缩、引用、权限和评估。
+- RAG 只要有 embedding 就够：不够。RAG 还需要 chunk、metadata、hybrid search、rerank、上下文压缩、引用、权限和评估等流程和技巧。
 
-4. 生成模型的 token embedding 可以直接拿来做检索：通常不建议。生成模型内部 embedding 的训练目标是语言建模，不一定适合语义检索。工程上一般使用专门训练的 embedding 模型。
+- 生成模型的 token embedding 可以直接拿来做检索：通常不建议。生成模型内部 embedding 的训练目标是语言建模，不一定适合语义检索。工程上一般使用专门训练的 embedding 模型。
 
 ---
 
@@ -405,15 +387,16 @@ Embedding 不只用于 RAG，也常用于分类、聚类、去重等场景。
 
 Embedding 是连接离散文本和连续计算空间的桥梁。
 
-在 LLM 内部，token embedding 把 token id 变成 Transformer 可以处理的向量；经过 Transformer 多层处理后，模型得到包含上下文的 hidden state，并用 LM Head 预测下一个 token。
+在 LLM 内部，token embedding 把 token id 变成 Transformer 可以处理的向量；经过 Transformer 多层处理后，模型得到包含上下文的 hidden state，并用 LM Head 得到 logits。
 
-在 RAG 和搜索系统中，text embedding 把问题和文档片段变成语义向量，用相似度搜索找相关材料。
+结合之前在 "Token 与概率" 篇中的知识，LLM 模型的生成流程可以抽象为：
+1. 使用 **tokenizer** 切分文本，并且得到 tokens 和 token ids。
+2. 通过 **ebmedding** 得到 token embedding ，拼接 position embedding 作为模型输入。
+3. **模型计算**得到 hidden state。
+4. **LM Head** 将 hidden state 转化为 logits。
+5. **Softmax** 将 logits 表示为概率分布。
+6. **解码和采样** 确定 next token。
+7. 将这个 token **追加**到输入中并进行下一次**循环**。
 
-理解 embedding 后，才能更好地理解：
 
-- 为什么 token id 本身不表达语义。
-- 为什么模型需要 hidden size。
-- 为什么同一个词在不同上下文中含义不同。
-- 为什么 RAG 需要向量库和相似度搜索。
-- 为什么 embedding 检索有用但不等于事实校验。
-- 为什么工程上要区分 token embedding 和 text embedding。
+在 RAG 和搜索系统中，text embedding 把用户输入和文档片段变成语义向量，系统通过相似度检索找到相关材料并送入模型作为上下文参考。
