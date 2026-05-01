@@ -1,7 +1,8 @@
 ---
 title: 使用 vllm 部署 Qwen3.5
 tags: [Qwen3.5, vLLM, 模型部署]
-description: 使用 vllm 部署 Qwen3.5 系列模型
+description: 使用 vllm 部署 Qwen3.5 系列模型。
+draft: true
 sidebar_position: 1
 ---
 

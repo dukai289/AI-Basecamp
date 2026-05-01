@@ -1,28 +1,29 @@
 ---
-title: 使用 neo4j/llm-graph-builder 构建知识图谱
-tags: [知识图谱, neo4j, neo4j/llm-graph-builder]
-description: 使用 neo4j/llm-graph-builder 构建知识图谱
+title: 使用 neo4j KG Builder 构建 KG
+hide_title: true
+tags: [知识图谱, KG, neo4j, neo4j/llm-graph-builder, Neo4j LLM Knowledge Graph Builder]
+description: 使用 Neo4j LLM Knowledge Graph Builder 构建知识图谱。
 sidebar_position: 3
 last_update:
   date: 2026-04-21
 ---
 
-# 使用 neo4j/llm-graph-builder 构建知识图谱
+## 使用 Neo4j LLM Knowledge Graph Builder 构建知识图谱
 
 :::tip[内容]
-1. neo4j/llm-graph-builder 的 2 种使用方式。
+1. Neo4j LLM Knowledge Graph Builder 的 2 种使用方式。
 2. 各方式的使用指南与特点。
 3. 工作原理、边界与特点、使用建议、最佳实践。
 :::
 
-使用 `neo4j/llm-graph-builder` 构建知识图谱，通常有两种方式：
+使用 Neo4j LLM Knowledge Graph Builder (`neo4j/llm-graph-builder`) 构建知识图谱，通常有两种方式：
 
 1. 在线服务 - [The LLM Knowledge Graph Builder Application online application](https://llm-graph-builder.neo4jlabs.com/)
 2. 本地部署 - [neo4j/llm-graph-builder - GitHub](https://github.com/neo4j-labs/llm-graph-builder)
 
 ---
 
-## 1. 在线服务
+### 1. 在线服务
 
 ### 1.1 参考资料
 

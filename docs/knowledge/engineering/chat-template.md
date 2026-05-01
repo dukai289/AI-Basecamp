@@ -59,6 +59,8 @@ chat_template render
 所以，`chat_template` 不是“装饰格式”，而是模型对话协议的一部分。  
 它决定角色怎么标记、消息怎么分隔、工具怎么声明、图片占位符怎么插入、是否打开思考模式等。
 
+---
+
 ## 2. 核心概念
 
 `chat_template` 是把结构化对话消息转换成模型可读 Prompt 的模板。
@@ -77,7 +79,9 @@ chat_template render
 - `formatted prompt`
 - `formatted chat prompt`
 
-## 3. 从请求到 Rendered Prompt 的例子
+---
+
+## 3. 一个例子
 
 下面用一个带图片和思考模式参数的请求举例。
 
@@ -111,7 +115,7 @@ chat_template render
 }
 ```
 
-### 3.2 渲染时发生了什么
+### 3.2 Chat Template 渲染
 
 `chat_template` 会把这些结构化字段转换成模型训练时熟悉的格式。例如：
 
@@ -120,7 +124,7 @@ chat_template render
 - 文本内容被拼到用户消息中。
 - `enable_thinking: true` 影响 assistant 开头，让模型进入思考输出格式。
 
-### 3.3 可能的 Rendered Prompt
+### 3.3 Rendered Prompt
 
 注意：下面只是示意，具体格式取决于模型和推理框架。
 
@@ -156,22 +160,11 @@ chat_template render
 
 这里的关键点是：`enable_thinking` 不一定会作为普通文本出现在用户消息里，它可能是在模板渲染阶段改变 assistant 开头的格式。
 
-## 4. `chat_template_kwargs` 的作用
+---
 
-`chat_template_kwargs` 可以影响模板渲染方式。
+## 4. 在 vLLM 中的应用
 
-例如不同的参数可以决定：
-
-- 是否启用思考模式。
-- 工具调用内容如何组织。
-- `system` / `user` / `assistant` 消息如何拼接。
-- 多模态内容如何展开。
-- 结构化输出约束如何写入 Prompt。
-
-所以它影响的是“模型最终看到的 Prompt 长什么样”，而不只是普通请求参数。
-
-## 5. 在 vLLM 中的应用
-
+### 4.1 vllm server
 以 vLLM 的 OpenAI-compatible server 为例，`chat_template` 会在服务端把 Chat API 请求转换成推理引擎需要的 prompt。
 
 大致流程是：
@@ -204,7 +197,7 @@ vLLM 合并模板参数
 送入模型推理
 ```
 
-### 5.1 `--chat-template`
+### 4.2 chat-template
 
 `--chat-template` 用来指定服务端使用的 chat template。
 
@@ -229,7 +222,7 @@ vllm serve Qwen/Qwen3-8B \
 
 注意：如果模型 tokenizer 没有定义 `chat_template`，而你又没有通过 `--chat-template` 指定模板，Chat API 请求可能无法被正确处理。
 
-### 5.2 `--default-chat-template-kwargs`
+### 4.3 default-chat-template-kwargs
 
 `--default-chat-template-kwargs` 用来给 chat template renderer 传服务端默认参数。
 
@@ -280,7 +273,7 @@ vllm serve Qwen/Qwen3-8B \
 如果同名字段冲突，请求级 chat_template_kwargs 优先。
 ```
 
-### 5.3 `--chat-template` 和 `--default-chat-template-kwargs` 的区别
+### 4.4 区别
 
 | 参数 | 解决的问题 | 例子 |
 | --- | --- | --- |
@@ -294,7 +287,7 @@ vllm serve Qwen/Qwen3-8B \
 --default-chat-template-kwargs 决定“渲染模板时默认传哪些变量”
 ```
 
-### 5.4 vLLM 中的实际注意事项
+### 4.5 注意事项
 
 - 如果只是想调整 thinking mode 这类模板变量，优先考虑 `--default-chat-template-kwargs`，不要急着改模板文件。
 - 如果模型缺少 chat template，或者默认模板确实不对，再使用 `--chat-template` 指定模板。
@@ -307,9 +300,11 @@ vllm serve Qwen/Qwen3-8B \
 - vLLM CLI serve 文档：https://docs.vllm.ai/en/latest/cli/serve/
 - vLLM reasoning outputs 文档：https://docs.vllm.ai/en/stable/features/reasoning_outputs.html
 
-## 6. 实际使用时要注意什么
+---
 
-### 6.1 不同模型的模板不能随便混用
+## 5. 实践建议
+
+### 5.1 不同模型的模板不能随便混用
 
 不同模型训练时使用的对话格式可能不同。同一组 `messages`，用不同 `chat_template` 渲染出来的 Prompt 可能完全不一样。
 
@@ -321,7 +316,7 @@ vllm serve Qwen/Qwen3-8B \
 - 输出里出现奇怪的特殊 token。
 - 思考模式开启或关闭不符合预期。
 
-### 6.2 排查问题时要看最终 Prompt
+### 5.2 排查问题时要看最终 Prompt
 
 如果模型输出异常，不要只看请求里的 `messages`。更应该确认最终渲染出来的 Prompt。
 
@@ -333,7 +328,7 @@ vllm serve Qwen/Qwen3-8B \
 - 图片、音频等多模态内容是否变成正确占位符。
 - `enable_thinking`、`tools`、`response_format` 等参数是否影响了渲染结果。
 
-### 6.3 工具调用依赖模板格式
+### 5.3 工具调用依赖模板格式
 
 工具调用不是只把 `tools` 字段传进去就结束了。很多模型需要在 Prompt 里看到特定的工具声明格式，才能按预期生成工具调用。
 
@@ -344,7 +339,7 @@ vllm serve Qwen/Qwen3-8B \
 - 模型本身是否按这种工具格式训练过。
 - 推理框架是否对工具调用做了额外封装。
 
-### 6.4 自定义模板要谨慎
+### 5.4 自定义模板要谨慎
 
 自定义 `chat_template` 前，先确认模型官方推荐格式。除非明确知道模型训练时的对话格式，否则不要随意修改：
 
@@ -355,7 +350,7 @@ vllm serve Qwen/Qwen3-8B \
 - 多模态占位符。
 - 思考模式标签。
 
-### 6.5 记录实验时要记录模板信息
+### 5.5 记录实验时要记录模板信息
 
 做模型评测或问题复现时，建议同时记录：
 
