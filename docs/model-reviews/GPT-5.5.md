@@ -3,18 +3,19 @@ title: GPT-5.5
 sidebar_position: -6
 tags: [GPT-5.5, chatGPT, GPT]
 description: GPT-5.5 实测。
-draft: true
 last_update:
-  date: 2026-04-24
+  date: 2026-04-25
 ---
 
-# GPT-5.5 实测
+# GPT-5.5 测评
 
 :::tip[内容]
-GPT-5.5 的提升重点与效果实测。
+GPT-5.5 的介绍、能力提升与效果实测。
 :::
 
-OpenAI 在 2026年 4 月 23 日正式发布新一代模型 GPT-5.5。
+## 模型介绍
+
+OpenAI 在 2026年 4 月 23 日正式发布新一代模型 **GPT-5.5**。
 
 OpenAI 将其称为最智能、最直观易用的模型，也是在计算机上完成工作的新方式的下一步。
 
@@ -22,8 +23,9 @@ OpenAI 将其称为最智能、最直观易用的模型，也是在计算机上�
 
 ---
 
-## 本次提升重点
+## 能力提升
 
+OpenAI 在官方发布内容中提到 GPT-5.5 在下面几方面的能力提升：
 + 在智能体编码、计算机应用、知识工作和早期科学研究等领域的提升尤为显著
 + 实际应用中的 token 延迟与 GPT-5.4 相当，同时智能水平却更高
 + 它完成相同的 Codex 任务所需的 token 数量也显著减少
@@ -57,4 +59,4 @@ OpenAI 将其称为最智能、最直观易用的模型，也是在计算机上�
 
 
 # 参考
-+ [OpenAI / Introducing GPT‑5.5](https://openai.com/index/introducing-gpt-5-5/)
++ [Introducing GPT‑5.5 - OpenAI](https://openai.com/index/introducing-gpt-5-5/)

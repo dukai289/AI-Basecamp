@@ -75,5 +75,17 @@
 # 20260427
 + [x] 服务器 crontab 加上了 goaccess(云效流水线没有goaccess) 
 
+# 20260501
++ [x] AI-Basecamp 复习:Token、Embedding、Attention、Position Embedding
+
+# 20260501
++ [x] AI-Basecamp - Transformer
+
+# 20260503
++ [x] AI-Basecamp - MoE
++ [x] AI-Basecamp - 解码与生成
+
 # 有意思的内容
++ [ ] AI-Basecamp - GPT-5.5 测评
++ [ ] 公众号/AI-Basecamp - Agent Guardials
 + [ ] OpenBMB/VoxCPM
