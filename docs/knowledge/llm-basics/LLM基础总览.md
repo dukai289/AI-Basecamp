@@ -230,7 +230,7 @@ hidden state
 
 对应阅读：
 
-- [上下文窗口](./上下文窗口.md)
+- [提示工程](./PromptEngineering.md)
 - [KV Cache](../engineering/KV-Cache.md)
 
 ## 9. 预训练让模型学会通用语言能力
