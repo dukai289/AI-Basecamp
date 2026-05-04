@@ -85,7 +85,10 @@
 + [x] AI-Basecamp - MoE
 + [x] AI-Basecamp - 解码与生成
 
-# 有意思的内容
+# 20260503
++ [x] AI-Basecamp - 提示工程
 + [ ] AI-Basecamp - GPT-5.5 测评
+
+# 有意思的内容
 + [ ] 公众号/AI-Basecamp - Agent Guardials
 + [ ] OpenBMB/VoxCPM
