@@ -1,5 +1,5 @@
 ---
-title: Agent
+title: Agent 智能体
 sidebar_position: 10
 tags: [Agent, AI Agent, 工具调用, 多智能体, Agent框架]
 description: 解释大语言模型 Agent 的基本概念、意义、运行循环、系统构成，以及常见 Agent 开发框架。
@@ -7,7 +7,7 @@ last_update:
   date: 2026-04-30
 ---
 
-# Agent
+# Agent *智能体*
 
 :::tip[内容]
 Agent 的基本概念、构成与运行循环，以及一些开发框架的介绍。

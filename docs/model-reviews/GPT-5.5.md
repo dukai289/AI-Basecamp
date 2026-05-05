@@ -85,11 +85,28 @@ OpenAI 在官方发布内容中提到 GPT-5.5 在下面几方面的能力提升�
   
 
   </TabItem>
-  <TabItem value="任务3" label="任务3" default>
+  <TabItem value="浏览器自动化" label="浏览器自动化" default>
+    ```text
+    在 codex + GPT-5.5(中等思考) 上，并且安装了 chrome-devtools-mcp：
+    找一个在线数独页面，根据盘面填写答案。
+    要求：一步步填写，不能直接根据网页截图一步写出所有答案。
+    ```
+    ![使用浏览器玩数独](/img/GPT-5.5-review-browser-use.png)
   </TabItem>
-  <TabItem value="任务4" label="任务4" default>
+  <TabItem value="结合Images-2" label="结合Images-2" default>
+    ```text
+    在 codex + GPT-5.5(中等思考) 上：
+    参考 ai-basecamp.sparkhub.space 中 "Transformer架构" 的内容，使用 [$imagegen](...) 作成一张知识卡片
+    ```
+    ![结合Images-2](/img/GPT-5.5-review-Image2.png)
   </TabItem>
-  <TabItem value="任务5" label="任务5" default>
+  <TabItem value="GPT-5.5介绍视频" label="GPT-5.5介绍视频" default>
+    ```text
+    在 codex + GPT-5.5(中等思考) 上，并且安装了 remotion-best-practices skill：
+    参考 https://openai.com/index/introducing-gpt-5-5/ 的内容，
+    使用 [$remotion-best-practices](...) 制作 1 分钟的视频 
+    ```
+    <video src="/video/transformer-architecture.mp4" controls width="100%"></video>
   </TabItem>
 </Tabs>
 
