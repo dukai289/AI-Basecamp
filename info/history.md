@@ -85,8 +85,11 @@
 + [x] AI-Basecamp - MoE
 + [x] AI-Basecamp - 解码与生成
 
-# 20260503
+# 20260504
 + [x] AI-Basecamp - 提示工程
+
+# 20260505
++ [x] AI-Basecamp - Agent
 + [ ] AI-Basecamp - GPT-5.5 测评
 
 # 有意思的内容
