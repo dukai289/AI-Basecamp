@@ -422,7 +422,7 @@ FP16 -> INT8 / INT4 / NF4
 
 对应阅读：
 
-- [多模态模型](./MultimodalModel.md)
+- [多模态模型](./MLLM.md)
 
 ## 17. 幻觉是生成模型的天然风险
 
