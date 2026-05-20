@@ -236,17 +236,7 @@ const config = {
           remarkPlugins,
           rehypePlugins,
         },
-        blog: {
-          routeBasePath: "blog",
-          blogTitle: "资讯",
-          blogDescription:
-            "AI 行业动态、产品发布、重要论文、产业政策和事件跟踪。",
-          showReadingTime: true,
-          blogSidebarTitle: "资讯",
-          blogSidebarCount: "ALL",
-          remarkPlugins,
-          rehypePlugins,
-        },
+        blog: false,
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -264,7 +254,60 @@ const config = {
     ],
   ],
 
-  plugins: [silenceMermaidLanguageServerTypesWarning],
+  plugins: [
+    silenceMermaidLanguageServerTypesWarning,
+    [
+      "@docusaurus/plugin-content-blog",
+      {
+        id: "daily",
+        path: "blog/daily",
+        routeBasePath: "blog/daily",
+        blogTitle: "AI 日报",
+        blogDescription:
+          "AI 行业每日动态，覆盖模型、产品、政策、资本和产业事件。",
+        blogSidebarTitle: "AI 日报",
+        blogSidebarCount: "ALL",
+        authorsMapPath: "../authors.yml",
+        showReadingTime: true,
+        remarkPlugins,
+        rehypePlugins,
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-blog",
+      {
+        id: "weekly",
+        path: "blog/weekly",
+        routeBasePath: "blog/weekly",
+        blogTitle: "AI 周报",
+        blogDescription:
+          "AI 行业周度复盘，整理关键事件、产业主线和下周观察。",
+        blogSidebarTitle: "AI 周报",
+        blogSidebarCount: "ALL",
+        authorsMapPath: "../authors.yml",
+        showReadingTime: true,
+        remarkPlugins,
+        rehypePlugins,
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-blog",
+      {
+        id: "monthly",
+        path: "blog/monthly",
+        routeBasePath: "blog/monthly",
+        blogTitle: "AI 月报",
+        blogDescription:
+          "AI 行业月度复盘，整理模型、Agent、基础设施、资本和治理趋势。",
+        blogSidebarTitle: "AI 月报",
+        blogSidebarCount: "ALL",
+        authorsMapPath: "../authors.yml",
+        showReadingTime: true,
+        remarkPlugins,
+        rehypePlugins,
+      },
+    ],
+  ],
 
   themes: [
     "@docusaurus/theme-mermaid",
@@ -277,7 +320,7 @@ const config = {
         indexBlog: true,
         indexPages: true,
         docsRouteBasePath: "/",
-        blogRouteBasePath: "/blog",
+        blogRouteBasePath: ["/blog/daily", "/blog/weekly", "/blog/monthly"],
       },
     ],
   ],
@@ -306,9 +349,23 @@ const config = {
         },
         items: [
           {
-            to: "/blog",
+            type: "dropdown",
             position: "left",
             label: "资讯",
+            items: [
+              {
+                to: "/blog/daily",
+                label: "AI 日报",
+              },
+              {
+                to: "/blog/weekly",
+                label: "AI 周报",
+              },
+              {
+                to: "/blog/monthly",
+                label: "AI 月报",
+              },
+            ],
           },
           {
             type: "doc",
